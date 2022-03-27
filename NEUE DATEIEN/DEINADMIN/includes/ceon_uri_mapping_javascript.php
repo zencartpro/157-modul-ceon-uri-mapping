@@ -6,7 +6,7 @@
  * @copyright Copyright 2003-2021 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ceon_uri_mapping_javascript.php 2021-06-23 09:49:05 webchills $
+ * @version $Id: ceon_uri_mapping_javascript.php 2022-03-27 09:18:05 webchills $
  */
 
 // displays the javascript necessary for
@@ -224,7 +224,8 @@ window.onload = function(){
 	place.parentElement.insertBefore(ceonUriMappingGeneratedURI, place);
 
 };
-	</script>
+	</script>	
+	
 <?php }
 
 

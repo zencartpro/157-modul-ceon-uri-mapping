@@ -121,7 +121,7 @@ Laden Sie diese .htaccess ins Shopverzeichnis hoch.
 Stellen Sie unter URI Auto-generation Settings nach Ihren Wünschen ein.
 Tragen Sie insbesondere die gewünschten Bezeichnungen für die Seiten Bewertungen, Bewertung, Bewertung schreiben und Frage zum Artikel ein.
 
-Bsp:
+Beispiele:
 
 Products' Reviews Pages
 deutsch: Bewertungen
