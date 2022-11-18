@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ceon URI Mapping URI Handler Class. 
  * Zen Cart German Specific
@@ -10,7 +9,7 @@
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingHandler.php 2022-02-19 20:41:15Z webchills $
+ * @version     $Id: class.CeonURIMappingHandler.php 2022-11-18 22:11:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -510,6 +509,9 @@ class CeonURIMappingHandler extends CeonURIMappingHandlerBase
 						in_array($_GET['main_page'], $ceon_uri_mapping_product_related_pages)) {
 					// Remove the category ID from the URI if it is simply the product's master category as it will
 					// be regenerated when the static URI is loaded
+					if (!isset($_GET['products_id']) && isset($_GET['pid'])) {
+                                        $_GET['products_id'] = $_GET['pid'];
+                                        }
 					if (isset($_GET['cPath']) && $_GET['cPath'] == zen_get_product_path($_GET['products_id'])) {
 						unset($_GET['cPath']);
 					}
