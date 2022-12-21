@@ -3,11 +3,11 @@
  * create the breadcrumb trail
  * see {@link  http://www.zen-cart.com/wiki/index.php/Developers_API_Tutorials#InitSystem wikitutorials} for more details.
  *
- 
  * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2022-02-18 20:01:16Z webchills $
+ * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
+ * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2022-12-21 08:46:16Z webchills $
  */
 if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
@@ -70,7 +70,7 @@ while (!$get_terms->EOF) {
 // END CEON URI MAPPING 2 of 2
     }
 	}
-	$get_terms->movenext();
+	$get_terms->MoveNext();
 }
 /**
  * add the products model to the breadcrumb trail

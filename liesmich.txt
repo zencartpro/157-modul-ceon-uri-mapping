@@ -1,9 +1,14 @@
-CEON URI Mappings 5.1.1 für Zen Cart 1.5.7 deutsch
+CEON URI Mappings 5.1.2 für Zen Cart 1.5.7 deutsch
 
 Dieses Modul erlaubt das benutzerdefinierte Umschreiben der URLs in Zen Cart.
 Anders als bei anderen Modulen dieser Art, erfolgt das Umschreiben nicht automatisch, sondern es kann jede URL per Admin eigens definiert werden, was eine völlige Kontrolle über die vom Shop verwendeten URLs ermöglicht.
 
-Version 5.1.1 ist ausschließlich für Zen Cart 1.5.7 deutsch geeignet
+Version 5.1.2 ist ausschließlich für Zen Cart 1.5.7 deutsch geeignet
+
+Changelog 5.1.2
+Dezember 2022 - webchills
+Anpassungen für 1.5.7f
+Fix für undefined array keys auf ask_a_question Seiten
 
 Changelog 5.1.1
 Februar 2022 - webchills
@@ -57,7 +62,7 @@ Oder einfach das automatische Vergeben einer URL angekreuzt lassen (Tick this bo
 NEUINSTALLATION
 
 
-Dieses Modul ist nur für Zen Cart 1.5.7 deutsch geeignet und ändert einige wichtige Corefiles.
+Dieses Modul ist nur für Zen Cart 1.5.7 deutsch geeignet und ändert einige Corefiles.
 Es ist kein Modul, das Sie in 2 Minuten einfach hochladen können.
 Da das Modul englisch ist, sollten Sie gute Englischkenntnisse haben
 
@@ -161,14 +166,14 @@ Lesen Sie die umfangreiche Doku im Ordner DOKU ENGLISCH, um sich mit dem Modul u
 
 ____________________________________________________________________________________________________________________________________________
 
-UPDATE VON VERSION 5.0.0 oder 5.0.1 auf 5.1.1
+UPDATE VON VERSION 5.0.0 oder 5.0.1 auf 5.1.2
 
-Wenn Sie in Ihrem 1.5.6 Shop bereits das CEON URI Mapping Modul 5.0.1 oder 5.0.0 verwenden hatten und nun auf Zen Cart 1.5.7 aktualisieren, dann können Sie auch einfach auf 5.1.1 aktualisieren
+Wenn Sie in Ihrem Shop bereits das CEON URI Mapping Modul 5.1.1, 5.0.1 oder 5.0.0 verwenden, dann können Sie einfach auf 5.1.2 aktualisieren
 Gehen Sie dazu genauso vor wie unter Neuinstallation beschrieben.
 Einzige Ausnahme:
 Punkt 1 lassen Sie natürlich weg, denn Sie haben ja bereits die zusätzlichen CEON URI Mapping Datenbanktabellen in Ihrer Datenbank
 Nach dem Hochladen der Dateien gehen Sie auf den Menüpunkt Module > CEON URI Mapping (SEO) Config
-Dort werden Sie dann sehen, dass das Modul automatisch auf 5.1.1 aktualisiert wurde.
+Dort werden Sie dann sehen, dass das Modul automatisch auf 5.1.2 aktualisiert wurde.
 Löschen Sie nun noch folgende Datei falls vorhanden:
 includes/extra_datafiles/ceon_uri_mapping_sessions_define.php
 Sie wird bereits seit 5.1.0 nicht mehr benötigt
