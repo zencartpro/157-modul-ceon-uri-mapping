@@ -6,7 +6,7 @@
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2019 Zen Cart Development Team
+ * @copyright   Copyright 2003-2023 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
@@ -61,7 +61,7 @@ class CeonURIMappingVersion extends CeonURIMappingTabbedPanelAdminInterface
 		// Set up the basic version settings for this module
 		$this->_ceon_base_model_code = 'S-ZC-UM';
 		
-		$this->_version = '5.1.2';
+		$this->_version = '5.1.3';
 		
 		$this->_copyright_start_year = 2008;
 		

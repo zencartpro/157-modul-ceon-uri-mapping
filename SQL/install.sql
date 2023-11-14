@@ -1,5 +1,5 @@
 ###############################################################################################
-# CEON URI Mapping 5.1.1 Install - 2022-02-19 - webchills
+# CEON URI Mapping 5.1.2 Install - 2023-11-04 - webchills
 ###############################################################################################
 
 ##############################
@@ -33,14 +33,21 @@ PRIMARY KEY (`page_type`, `language_code`)
 
 
 CREATE TABLE IF NOT EXISTS ceon_uri_mappings (
-`uri` TEXT NOT NULL,
-`language_id` INT(11) UNSIGNED DEFAULT NULL,
-`current_uri` INT(1) UNSIGNED DEFAULT '0',
-`main_page` VARCHAR(45) NULL,
-`query_string_parameters` VARCHAR(255) DEFAULT NULL,
-`associated_db_id` INT(11) UNSIGNED DEFAULT NULL,
-`alternate_uri` VARCHAR(255) DEFAULT NULL,
-`redirection_type_code` VARCHAR(3) DEFAULT '301',
-`date_added` DATETIME NOT NULL DEFAULT '0001-01-01 00:00:00',
-INDEX `assoc_db_id_idx` (`language_id`, `current_uri`, `main_page`, `associated_db_id`)
+  `id` int(11) NOT NULL,
+  `uri` TEXT NOT NULL,
+  `language_id` int(11) UNSIGNED DEFAULT NULL,
+  `current_uri` int(1) UNSIGNED DEFAULT 0,
+  `main_page` varchar(45) DEFAULT NULL,
+  `query_string_parameters` varchar(255) DEFAULT NULL,
+  `associated_db_id` int(11) UNSIGNED DEFAULT NULL,
+  `alternate_uri` varchar(255) DEFAULT NULL,
+  `redirection_type_code` varchar(3) DEFAULT '301',
+  `date_added` DATETIME NOT NULL DEFAULT '0001-01-01 00:00:00'
 ) ENGINE=MyISAM;
+
+ALTER TABLE ceon_uri_mappings
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `assoc_db_id_idx` (`language_id`,`current_uri`,`main_page`,`associated_db_id`);
+  
+ALTER TABLE ceon_uri_mappings
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

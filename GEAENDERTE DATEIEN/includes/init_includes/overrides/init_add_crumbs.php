@@ -1,39 +1,42 @@
 <?php
 /**
  * create the breadcrumb trail
- * see {@link  http://www.zen-cart.com/wiki/index.php/Developers_API_Tutorials#InitSystem wikitutorials} for more details.
- *
- * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * see  {@link  https://docs.zen-cart.com/dev/code/init_system/} for more details.
+ * Zen Cart German Specific (158 code in 157)
+ * @copyright Copyright 2003-2023 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2022-12-21 08:46:16Z webchills $
+ * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2023-11-04 08:24:16Z webchills $
  */
 if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
 $breadcrumb->add(HEADER_TITLE_CATALOG, zen_href_link(FILENAME_DEFAULT));
+
 /**
  * add category names or the manufacturer name to the breadcrumb trail
  */
-if (!isset($robotsNoIndex)) $robotsNoIndex = false;
-// might need isset($_GET['cPath']) later ... right now need $cPath or breaks breadcrumb from sidebox etc.
-if (isset($cPath_array) && isset($cPath)) {
-  for ($i=0, $n=sizeof($cPath_array); $i<$n; $i++) {
-    $categories_query = "select categories_name
-                           from " . TABLE_CATEGORIES_DESCRIPTION . "
-                           where categories_id = '" . (int)$cPath_array[$i] . "'
-                           and language_id = '" . (int)$_SESSION['languages_id'] . "'";
+$robotsNoIndex = $robotsNoIndex ?? false;
 
-    $categories = $db->Execute($categories_query);
-    if ($categories->RecordCount() > 0) {
-      $breadcrumb->add($categories->fields['categories_name'], zen_href_link(FILENAME_DEFAULT, 'cPath=' . implode('_', array_slice($cPath_array, 0, ($i+1)))));
-    } elseif(SHOW_CATEGORIES_ALWAYS == 0) {
-      // if invalid, set the robots noindex/nofollow for this page
-      $robotsNoIndex = true;
-      break;
+// might need isset($_GET['cPath']) later ... right now need $cPath or breaks breadcrumb from sidebox etc.
+if (isset($cPath_array, $cPath)) {
+    for ($i = 0, $n = count($cPath_array); $i < $n; $i++) {
+        $categories_query =
+            "SELECT categories_name
+               FROM " . TABLE_CATEGORIES_DESCRIPTION . "
+              WHERE categories_id = " . (int)$cPath_array[$i] . "
+                AND language_id = " . (int)$_SESSION['languages_id'];
+        $categories = $db->Execute($categories_query, 1);
+
+        if (!$categories->EOF) {
+            $breadcrumb->add($categories->fields['categories_name'], zen_href_link(FILENAME_DEFAULT, 'cPath=' . implode('_', array_slice($cPath_array, 0, ($i + 1)))));
+        } elseif (SHOW_CATEGORIES_ALWAYS === '0') {
+            // if invalid, set the robots noindex/nofollow for this page
+            $robotsNoIndex = true;
+            break;
+        }
     }
-  }
 }
 /**
  * add get terms (e.g manufacturer, music genre, record company or other user defined selector) to breadcrumb
@@ -73,17 +76,17 @@ while (!$get_terms->EOF) {
 	$get_terms->MoveNext();
 }
 /**
- * add the products model to the breadcrumb trail
+ * add the products name to the breadcrumb trail
  */
 if (isset($_GET['products_id'])) {
-  $productname_query = "select products_name
-                   from " . TABLE_PRODUCTS_DESCRIPTION . "
-                   where products_id = '" . (int)$_GET['products_id'] . "'
-             and language_id = '" . $_SESSION['languages_id'] . "'";
+    $productname_query =
+        "SELECT products_name
+           FROM " . TABLE_PRODUCTS_DESCRIPTION . "
+          WHERE products_id = " . (int)$_GET['products_id'] . "
+            AND language_id = " . (int)$_SESSION['languages_id'];
+    $productname = $db->Execute($productname_query, 1);
 
-  $productname = $db->Execute($productname_query);
-
-  if ($productname->RecordCount() > 0) {
+    if (!$productname->EOF) {
     $breadcrumb->add($productname->fields['products_name'], zen_href_link(zen_get_info_page($_GET['products_id']), 'cPath=' . $cPath . '&products_id=' . $_GET['products_id']));
   }
 }
