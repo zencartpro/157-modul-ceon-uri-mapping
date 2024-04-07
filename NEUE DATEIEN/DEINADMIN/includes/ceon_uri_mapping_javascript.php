@@ -1,12 +1,12 @@
 <?php
 /**
  * This file is called by javascript_loader.php at the start of the body tag, just above the header menu, and loads most of the admin javascript components
- *
+ * Zen Cart German Specific
  * @package admin
  * @copyright Copyright 2003-2023 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ceon_uri_mapping_javascript.php 2023-11-25 07:18:05 webchills $
+ * @version $Id: ceon_uri_mapping_javascript.php 2024-04-07 14:58:05 webchills $
  */
 
 // displays the javascript necessary for
@@ -104,35 +104,26 @@ window.onload = function(){
 if (defined('FILENAME_MANUFACTURERS') && $_SERVER['SCRIPT_NAME'] == DIR_WS_ADMIN . (!strstr(FILENAME_MANUFACTURERS, '.php') ? FILENAME_MANUFACTURERS . '.php' : FILENAME_MANUFACTURERS) && isset($_GET['action']) && $_GET['action'] == 'edit') {
 	$ceon_class_name = 'row infoBoxContent';
 ?>
-	 <script title="ceon_uri_mapping_javascript(<?php echo __LINE__; ?>)">
+	<script title="ceon_uri_mapping_javascript(<?= __LINE__ ?>)">
 window.onload = function(){
-	var ceonUriMappingGeneratedURI = document.createElement("div");
+	let ceonUriMappingGeneratedURI = document.createElement("div");
 	ceonUriMappingGeneratedURI.setAttribute("class", "<?php echo $ceon_class_name; ?>");
 	ceonUriMappingGeneratedURI.innerHTML = <?php
-
-	// BEGIN CEON URI MAPPING 4 of 4
 	require_once(DIR_WS_CLASSES . 'class.CeonURIMappingAdminManufacturerPages.php');
-	
 	$ceon_uri_mapping_admin = new CeonURIMappingAdminManufacturerPages();
-	
-	$ceon_uri_mapping_admin->addURIMappingFieldsToEditManufacturerFieldsFormArray((int) $_GET['mID']);
-	
-	// END CEON URI MAPPING 4 of 4
-	
-	$text_str = '';
-	foreach ($GLOBALS['contents'] as $key => $value) {
-		$text_str .= $value['text'] ?? '';
-	}
-	
-	echo json_encode($text_str);
-	// END CEON URI MAPPING 3 of 3
+    $GLOBALS['contents'] = []; 
+    $ceon_uri_mapping_admin->addURIMappingFieldsToEditManufacturerFieldsFormArray((int) $_GET['mID']);
+    $ceonUriMappingDiv = '';
+    $contents = $GLOBALS['contents'];
+    for ($i = 0; $i < count($contents); $i++) {
+        $ceonUriMappingDiv .= $contents[$i]['text'];
+    }
+	echo json_encode($ceonUriMappingDiv);
 ?>;
-
-	var classList = document.getElementsByClassName("row infoBoxContent");
-	var place = classList[classList.length - 1];
-	
+	let classList = document.getElementsByClassName("row infoBoxContent");
+	let place = classList[classList.length - 1];
 	if (!classList.length) {
-		var formList = document.forms;
+		let formList = document.forms;
 		place = formList[formList.length - 1][formList[formList.length - 1].length - 1];
 	}
 	
@@ -147,44 +138,32 @@ window.onload = function(){
 if (defined('FILENAME_MANUFACTURERS') && $_SERVER['SCRIPT_NAME'] == DIR_WS_ADMIN . (!strstr(FILENAME_MANUFACTURERS, '.php') ? FILENAME_MANUFACTURERS . '.php' : FILENAME_MANUFACTURERS) && isset($_GET['action']) && $_GET['action'] == 'new') {
 	$ceon_class_name = 'row infoBoxContent';
 ?>
-	 <script title="ceon_uri_mapping_javascript(<?php echo __LINE__; ?>)">
+	<script title="ceon_uri_mapping_javascript(<?= __LINE__ ?>)">
 window.onload = function(){
-	var ceonUriMappingGeneratedURI = document.createElement("div");
+	let ceonUriMappingGeneratedURI = document.createElement("div");
 	ceonUriMappingGeneratedURI.setAttribute("class", "<?php echo $ceon_class_name; ?>");
-	
 	ceonUriMappingGeneratedURI.innerHTML = <?php
-
-	$languages = zen_get_languages();
-
-	// BEGIN CEON URI MAPPING 3 of 4
-	require_once(DIR_WS_CLASSES . 'class.CeonURIMappingAdminManufacturerPages.php');
-	
+    $languages = zen_get_languages();
+    require_once(DIR_WS_CLASSES . 'class.CeonURIMappingAdminManufacturerPages.php');
 	$ceon_uri_mapping_admin = new CeonURIMappingAdminManufacturerPages();
-	
+    $GLOBALS['contents'] = [];
 	$ceon_uri_mapping_admin->addURIMappingFieldsToAddManufacturerFieldsArray();
-	
-	// END CEON URI MAPPING 3 of 4
-	
-	$text_str = '';
-	foreach ($GLOBALS['contents'] as $key => $value) {
-		$text_str .= $value['text'];
-	}
-	
-	echo json_encode($text_str);
-	// END CEON URI MAPPING 3 of 3
-	 ?>;
-	
-	var classList = document.getElementsByClassName("<?php echo $ceon_class_name; ?>");
-	var place = classList[classList.length - 1];
-	
+    $ceonUriMappingDiv = '';
+    $contents = $GLOBALS['contents'];
+    for ($i = 0; $i < count($contents); $i++) {
+        $ceonUriMappingDiv .= $contents[$i]['text'];
+    }
+	echo json_encode($ceonUriMappingDiv);
+	?>;
+	let classList = document.getElementsByClassName("<?=$ceon_class_name; ?>");
+	let place = classList[classList.length - 1];
 	if (!classList.length) {
-		var formList = document.forms;
+        let formList = document.forms;
 		place = formList[formList.length - 1][formList[formList.length - 1].length - 1];
 	}
 	
 	place.parentElement.insertBefore(ceonUriMappingGeneratedURI, place);
 
-//   ?>;
 };
 	</script>
 <?php }
@@ -237,7 +216,7 @@ if (defined('FILENAME_CATEGORY_PRODUCT_LISTING') && $_SERVER['SCRIPT_NAME'] == D
 	 <script title="ceon_uri_mapping_javascript(<?php echo __LINE__; ?>)">
 window.onload = function(){
 	var ceonUriMappingGeneratedURI = document.createElement("div");
-	ceonUriMappingGeneratedURI.setAttribute('class', 'row infoBoxContent');
+	ceonUriMappingGeneratedURI.setAttribute('class', 'row infoBoxContent duplicate-only hiddenField');
 	ceonUriMappingGeneratedURI.innerHTML = <?php
 
 	// BEGIN CEON URI MAPPING 1 of 1
@@ -245,10 +224,8 @@ window.onload = function(){
 	
 	$ceon_uri_mapping_admin = new CeonURIMappingAdminProductPages();
 
-	$contents_start = 0;
-	if (!empty($GLOBALS['contents'])) {
-		$contents_start = count($GLOBALS['contents']) - 1;
-	}
+	$GLOBALS['contents'] = [];
+
 	$ceon_uri_mapping_admin->addURIMappingFieldsToProductCopyFieldsArray((int) $_GET['pID']);
 	
 	// END CEON URI MAPPING 1 of 1
@@ -256,7 +233,7 @@ window.onload = function(){
 	$ceonUriMappingCopyProduct = '';
 	$contents = $GLOBALS['contents'];
 
-	for ($i = $contents_start, $n = count($contents) - 1; $i < $n; $i++) {
+	for ($i = 0; $i < count($contents); $i++) {
 		$ceonUriMappingCopyProduct .= $contents[$i]['text'];
 	}
     echo json_encode($ceonUriMappingCopyProduct);
@@ -303,7 +280,7 @@ window.onload = function(){
 	$ceonUriMappingMoveProduct = '';
 	$contents = $GLOBALS['contents'];
 	
-	for ($i = 0, $n = count($contents); $i < $n; $i++) {
+	for ($i = 0; $i < count($contents); $i++) {
 		$ceonUriMappingMoveProduct .= $contents[$i]['text'];
 	}
     echo json_encode($ceonUriMappingMoveProduct);
@@ -386,7 +363,7 @@ window.onload = function(){
 	
 	$ceon_uri_mapping_admin->addURIMappingFieldsToEditCategoryForm(
 		(int) $GLOBALS['cInfo']->categories_id,
-		['label' => 'col-sm-2 control-label', 'input_field'=>'col-sm-9 col-md-6']
+		array('label' => 'col-sm-2 control-label', 'input_field'=>'col-sm-9 col-md-6')
 		);
 	
 	$text_str = '';

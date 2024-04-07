@@ -3,11 +3,11 @@
  * create the breadcrumb trail
  * see  {@link  https://docs.zen-cart.com/dev/code/init_system/} for more details.
  * Zen Cart German Specific (158 code in 157)
- * @copyright Copyright 2003-2023 Zen Cart Development Team
+ * @copyright Copyright 2003-2024 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2023-11-04 08:24:16Z webchills $
+ * @version $Id: init_add_crumbs.php for Ceon Uri Mapping 2024-04-07 15:24:16Z webchills $
  */
 if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
@@ -52,19 +52,14 @@ while (!$get_terms->EOF) {
 		$get_term_breadcrumb = $db->execute($sql);
     if ($get_term_breadcrumb->RecordCount() > 0) {
 // BEGIN CEON URI MAPPING 1 of 2
-	  // Set the required parameters so that an attempt can be made to map the link to any static URI for the
-	  // filtered page
-	  $typefilter_parameters = '';
-	  
-	  if ($get_terms->fields['get_term_name'] != 'manufacturers_id') {
-		$typefilter_parameters = 'typefilter=' . str_replace('_id', '', $get_terms->fields['get_term_name']) . '&';
-	  }
-	  
-	  $typefilter_parameters .=
-		$get_terms->fields['get_term_name'] . '=' . $_GET[$get_terms->fields['get_term_name']];
-	  
-      $breadcrumb->add($get_term_breadcrumb->fields[$get_terms->fields['get_term_name_field']],
-		zen_href_link(FILENAME_DEFAULT, $typefilter_parameters));
+			// -----
+			// Enable a watching observer to modify the parameters to a breadcrumb link.
+			//
+			$link_parameters = $get_terms->fields['get_term_name'] . '=' . $_GET[$get_terms->fields['get_term_name']];
+			$zco_notifier->notify('NOTIFY_INIT_ADD_CRUMBS_GET_TERMS_LINK_PARAMETERS', $get_terms->fields, $link_parameters);
+			
+			$breadcrumb->add($get_term_breadcrumb->fields[$get_terms->fields['get_term_name_field']],
+				zen_href_link(FILENAME_DEFAULT, $link_parameters));
 	  /*
 // END CEON URI MAPPING 1 of 2
       $breadcrumb->add($get_term_breadcrumb->fields[$get_terms->fields['get_term_name_field']], zen_href_link(FILENAME_DEFAULT, $get_terms->fields['get_term_name'] . "=" . $_GET[$get_terms->fields['get_term_name']]));

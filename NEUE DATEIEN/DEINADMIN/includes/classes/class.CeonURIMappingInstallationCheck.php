@@ -1411,7 +1411,7 @@ class CeonURIMappingInstallationCheck extends CeonURIMappingVersion
 						$old_code_snippets_present[] = $i + 1;
 					}
 					
-					$offset = $snippet_end_line_pos + strlen($snippet_end_line);
+					$offset = $snippet_end_line_pos + (isset($snippet_end_line) ? strlen($snippet_end_line) : 0);
 					
 					if (is_null($snippet_end_line)) {
 						$offset = $snippet_start_line_pos + strlen($snippet_start_line);

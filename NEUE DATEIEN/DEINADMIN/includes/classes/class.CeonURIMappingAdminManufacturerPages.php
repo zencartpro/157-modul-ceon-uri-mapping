@@ -12,7 +12,7 @@
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingAdminManufacturerPages.php 2019-07-05 07:45:15Z webchills $
+ * @version     $Id: class.CeonURIMappingAdminManufacturerPages.php 2024-04-07 14:52:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -257,7 +257,7 @@ class CeonURIMappingAdminManufacturerPages extends CeonURIMappingAdminManufactur
 		// New manufacturer doesn't have any previous URI mappings
 		$prev_uri_mappings = array();
 		
-		$uri_mapping_input_fields = $this->buildManufacturerURIMappingFields($prev_uri_mappings);
+		$uri_mapping_input_fields = $this->buildManufacturerURIMappingFormFields($prev_uri_mappings);
 		
 		$contents[] = array('text' => $uri_mapping_input_fields);
 	}

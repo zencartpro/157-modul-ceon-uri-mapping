@@ -2,15 +2,15 @@
 
 /**
  * Ceon URI Mapping URI Handler Base Class.
- *
+ * Zen Cartr German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2021 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2024 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingHandlerBase.php 1028 2021-06-23 10:01:10Z webchills $
+ * @version     $Id: class.CeonURIMappingHandlerBase.php 2024-04-07 15:08:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -387,7 +387,7 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 		
 		// Handle variations of the index page URI
 		if ((isset($_GET['main_page']) &&
-				(strlen($_GET['main_page']) == 0 || $_GET['main_page'] == FILENAME_DEFAULT) &&
+				(is_array($_GET['main_page']) || strlen($_GET['main_page']) == 0 || $_GET['main_page'] == FILENAME_DEFAULT) &&
 				!isset($_GET['cPath']) && !isset($_GET['manufacturers_id']) && !isset($_GET['typefilter'])) ||
 				(!isset($_GET['main_page']) && $request_uri == strtolower(DIR_WS_CATALOG) . 'index.php')) {
 			// URI is DIR_WS_CATALOG/index.php?main_page=index, DIR_WS_CATALOG/index.php or

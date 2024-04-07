@@ -5,12 +5,12 @@
  * Zen Cart German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2021 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2024 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingConfigUtility.php 2021-06-23 13:00:15Z webchills $
+ * @version     $Id: class.CeonURIMappingConfigUtility.php 2024-04-07 14:46:15Z webchills $
  */
 
 /**
@@ -27,7 +27,7 @@ require_once(DIR_WS_CLASSES . 'class.CeonURIMappingVersion.php');
  *
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2019 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
@@ -159,6 +159,13 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 	protected $_product_reviews_write_pages_uri_parts = array();
 	
 		
+	/**
+	 * The list of URI part's text for ask a question pages, for the various languages the store uses.
+	 *
+	 * @var     array
+	 * @access  protected
+	 */
+	protected $_ask_a_question_pages_uri_parts = array();
 	// }}}
 	
 	// {{{ Class Constructor
@@ -749,7 +756,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			<td class="CeonFormItemField">' . "\n";
 		
 		$option_output_rows .= zen_draw_pull_down_menu('whitespace-replacement',
-			$whitespace_replacement_options, $this->_whitespace_replacement, '') . "\n";
+			$whitespace_replacement_options, $this->_whitespace_replacement, 'aria-label="Replace Mapping Whitespace"') . "\n";
 		
 		$option_output_rows .= '			</td>
 		</tr>' . "\n";
@@ -795,7 +802,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			<td class="CeonFormItemField">' . "\n";
 		
 		$option_output_rows .= zen_draw_textarea_field('remove-words', 'virtual', 50, 6,
-			htmlentities($this->_remove_words, ENT_COMPAT, CHARSET));
+			htmlentities($this->_remove_words, ENT_COMPAT, CHARSET), 'aria-label="Words to Remove"');
 		
 		$option_output_rows .= '			</td>
 		</tr>' . "\n";
@@ -809,7 +816,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			<td class="CeonFormItemField">' . "\n";
 		
 		$option_output_rows .= zen_draw_textarea_field('char-str-replacements', 'virtual', 50, 2,
-			$this->_char_str_replacements);
+			$this->_char_str_replacements, 'aria-label="Replace Character or String"');
 		
 		$option_output_rows .= '			</td>
 		</tr>' . "\n";
@@ -944,7 +951,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			$subpanel .= zen_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' .
 				$languages[$i]['image'], $languages[$i]['name']) . '&nbsp;' .
 				zen_draw_input_field('product-reviews-pages-uri-parts[' . $language_code . ']',
-				$this->_product_reviews_pages_uri_parts[$language_code], 'size="20" class="Textfield"') . "\n";
+				$this->_product_reviews_pages_uri_parts[$language_code], 'size="20" class="Textfield" aria-label="Product reviews pages uri parts"') . "\n";
 			
 			if (isset($this->_error_messages['product-reviews-pages-uri-parts-' . $language_code])) {
 				$subpanel .= '<br /><span class="FormError">' . TEXT_ERROR_URI_PART_MUST_BE_ENTERED . "</span>\n";
@@ -967,7 +974,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			$subpanel .= zen_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' .
 				$languages[$i]['image'], $languages[$i]['name']) . '&nbsp;' .
 				zen_draw_input_field('product-reviews-info-pages-uri-parts[' . $language_code . ']',
-				$this->_product_reviews_info_pages_uri_parts[$language_code], 'size="20" class="Textfield"') .
+				$this->_product_reviews_info_pages_uri_parts[$language_code], 'size="20" class="Textfield" aria-label="Product reviews info pages uri parts"') .
 				"\n";
 			
 			if (isset($this->_error_messages['product-reviews-info-pages-uri-parts-' . $languages[$i]['id']])) {
@@ -991,7 +998,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			$subpanel .= zen_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' .
 				$languages[$i]['image'], $languages[$i]['name']) . '&nbsp;' .
 				zen_draw_input_field('product-reviews-write-pages-uri-parts[' . $language_code . ']',
-				$this->_product_reviews_write_pages_uri_parts[$language_code], 'size="20" class="Textfield"') .
+				$this->_product_reviews_write_pages_uri_parts[$language_code], 'size="20" class="Textfield" aria-label="Product reviews write pages uri parts"') .
 				"\n";
 			
 			if (isset($this->_error_messages['product-reviews-write-pages-uri-parts-' . $languages[$i]['id']])) {
@@ -1016,7 +1023,7 @@ class CeonURIMappingConfigUtility extends CeonURIMappingVersion
 			$subpanel .= zen_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' .
 				$languages[$i]['image'], $languages[$i]['name']) . '&nbsp;' .
 				zen_draw_input_field('ask-a-question-pages-uri-parts[' . $language_code . ']',
-				$this->_ask_a_question_pages_uri_parts[$language_code], 'size="20" class="Textfield"') . "\n";
+				$this->_ask_a_question_pages_uri_parts[$language_code], 'size="20" class="Textfield" aria-label="Ask a product question."') . "\n";
 			
 			if (isset($this->_error_messages['ask-a-question-pages-uri-parts-' . $language_code])) {
 				$subpanel .= '<br /><span class="FormError">' . TEXT_ERROR_URI_PART_MUST_BE_ENTERED . "</span>\n";

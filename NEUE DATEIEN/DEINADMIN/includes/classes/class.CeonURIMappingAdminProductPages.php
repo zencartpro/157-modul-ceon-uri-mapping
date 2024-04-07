@@ -11,7 +11,7 @@
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingAdminProductPages.php 2021-06-23 13:07:15Z webchills $
+ * @version     $Id: class.CeonURIMappingAdminProductPages.php 2024-04-07 14:53:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -137,6 +137,7 @@ class CeonURIMappingAdminProductPages extends CeonURIMappingAdminProducts
 			
 			$product_type_handler_result = $db->Execute($product_type_handler_query);
 			
+			if (!$product_type_handler_result->EOF) {
 			$product_type_handler = $product_type_handler_result->fields['type_handler'];
 			
 			$columns_to_retrieve = array(
@@ -157,6 +158,10 @@ class CeonURIMappingAdminProductPages extends CeonURIMappingAdminProducts
 					$prev_uri_mappings_result->fields['uri'];
 				
 				$prev_uri_mappings_result->MoveNext();
+				}
+			} else {
+				// Product does not exist and therefore not expected to have previous mappings.
+				$this->_prev_uri_mappings = array();
 			}
 			
 			$this->_uri_mappings = $this->_prev_uri_mappings;

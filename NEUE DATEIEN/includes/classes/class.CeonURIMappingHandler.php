@@ -4,12 +4,12 @@
  * Zen Cart German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2022 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2024 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingHandler.php 2022-11-18 22:11:15Z webchills $
+ * @version     $Id: class.CeonURIMappingHandler.php 2024-04-07 15:06:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -30,7 +30,7 @@ require_once(DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.CeonURIMappingHandlerBase.
  *
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2019 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
@@ -405,7 +405,7 @@ class CeonURIMappingHandler extends CeonURIMappingHandlerBase
 		// A product review's page needs the ID included as part of the canonical URI
 		if (defined('FILENAME_PRODUCT_REVIEWS_INFO') && $main_page == FILENAME_PRODUCT_REVIEWS_INFO &&
 				isset($_GET['reviews_id'])) {
-			$ceon_uri_mapping_canonical_uri .= '?reviews_id=' . $_GET['reviews_id'];
+			$ceon_uri_mapping_canonical_uri .= '?reviews_id=' . (int) $_GET['reviews_id'];
 		}
 		if (isset($GLOBALS['zco_notifier'])) {
 			$GLOBALS['zco_notifier']->notify('CEON_CLASS_HANDLER_HANDLE_STATIC_URI_END', compact('mapping_info', 'uri_to_match'));
@@ -427,7 +427,7 @@ class CeonURIMappingHandler extends CeonURIMappingHandlerBase
 	 */
 	protected function _handleZCDynamicURI()
 	{
-		global /*$db, */$ceon_uri_mapping_product_pages, $ceon_uri_mapping_product_related_pages;
+		global $ceon_uri_mapping_product_pages, $ceon_uri_mapping_product_related_pages;
 		
 		$associated_db_id = null;
 		$query_string_to_match = null;
@@ -437,7 +437,7 @@ class CeonURIMappingHandler extends CeonURIMappingHandlerBase
 				isset($_GET[$_GET['typefilter'] . '_id']) && $_GET[$_GET['typefilter'] . '_id'] != ''))) {
 			if (isset($_GET['manufacturers_id'])) {
 				// This is a manufacturer page - get the URI for the manufacturers page if there is one
-				$query_string_to_match = 'manufacturers_id=' . $_GET['manufacturers_id'];
+				$query_string_to_match = 'manufacturers_id=' . (int) $_GET['manufacturers_id'];
 				
 			} else if (isset($_GET['typefilter']) && $_GET['typefilter'] != '' &&
 					isset($_GET[$_GET['typefilter'] . '_id']) && $_GET[$_GET['typefilter'] . '_id'] != '') {
@@ -688,7 +688,7 @@ class CeonURIMappingHandler extends CeonURIMappingHandlerBase
 				global $ceon_uri_mapping_canonical_uri;
 				
 				$ceon_uri_mapping_canonical_uri = HTTP_SERVER . DIR_WS_CATALOG .
-					'index.php?main_page=index&manufacturers_id=' . $_GET['manufacturers_id'];
+					'index.php?main_page=index&manufacturers_id=' . (int) $_GET['manufacturers_id'];
 				
 			} else if (isset($_GET['typefilter']) && $_GET['typefilter'] != '' &&
 					isset($_GET[$_GET['typefilter'] . '_id']) && $_GET[$_GET['typefilter'] . '_id'] != '') {

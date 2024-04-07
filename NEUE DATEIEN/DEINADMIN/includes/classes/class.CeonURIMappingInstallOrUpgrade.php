@@ -10,7 +10,7 @@
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingInstallOrUpgrade.php 2022-02-19 21:13:05Z webchills $
+ * @version     $Id: class.CeonURIMappingInstallOrUpgrade.php 2024-04-07 14:55:05Z webchills $
  */
 
 
@@ -124,22 +124,22 @@ class CeonURIMappingInstallOrUpgrade
 		
 		$this->_checkForDefaultConfig();
 		
-		if (((int) substr($this->_installed_version, 0, 1)) < 4) {
+		if (!isset($this->_installed_version) || ((int) substr($this->_installed_version, 0, 1)) < 4) {
 			$this->_changeDefaultRemoveWordsSetting();
 		}
 		
 		$this->_checkZenCartConfigGroupAndOption();
 		
-		if (!$this->_uri_mappings_table_created &&
+		if (isset($this->_installed_version) && (!$this->_uri_mappings_table_created &&
 				substr($this->_installed_version, 0, 1) == '2' ||
 				substr($this->_installed_version, 0, 3) == '3.0' ||
-				substr($this->_installed_version, 0, 3) == '3.2' || $this->_installed_version == '3.4.0') {
+				substr($this->_installed_version, 0, 3) == '3.2' || $this->_installed_version == '3.4.0')) {
 			// From 3.4.1 onwards the index page is always mapped to the main directory - i.e. the value of
 			// DIR_WS_CATALOG (e.g. / or /shop). Make any mappings for the index page historical
 			$this->_makeIndexPageMappingsHistorical();
 		}
 		
-		if (((int) substr($this->_installed_version, 0, 1)) < 4) {
+		if (!isset($this->_installed_version) || ((int) substr($this->_installed_version, 0, 1)) < 4) {
 			$this->_stripTrailingSlashesFromMappings();
 		}
 		
