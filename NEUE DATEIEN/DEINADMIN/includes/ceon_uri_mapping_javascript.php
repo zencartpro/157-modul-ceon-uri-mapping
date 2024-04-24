@@ -6,7 +6,7 @@
  * @copyright Copyright 2003-2023 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ceon_uri_mapping_javascript.php 2024-04-07 14:58:05 webchills $
+ * @version $Id: ceon_uri_mapping_javascript.php 2024-04-24 09:44:05 webchills $
  */
 
 // displays the javascript necessary for
@@ -273,6 +273,7 @@ window.onload = function(){
 	
 	$ceon_uri_mapping_admin = new CeonURIMappingAdminProductPages();
 	
+	$GLOBALS['contents'] = [];
 	$ceon_uri_mapping_admin->addURIMappingFieldsToProductMoveFieldsArray((int)$_GET['pID']);
 	
 	// END CEON URI MAPPING 1 of 1
