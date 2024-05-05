@@ -3,10 +3,10 @@
  * This file is called by javascript_loader.php at the start of the body tag, just above the header menu, and loads most of the admin javascript components
  * Zen Cart German Specific
  * @package admin
- * @copyright Copyright 2003-2023 Zen Cart Development Team
+ * @copyright Copyright 2003-2024 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ceon_uri_mapping_javascript.php 2024-04-24 09:44:05 webchills $
+ * @version $Id: ceon_uri_mapping_javascript.php 2024-05-05 07:58:05 webchills $
  */
 
 // displays the javascript necessary for
@@ -189,7 +189,7 @@ window.onload = function(){
 		$ceon_uri_mapping_admin = empty($GLOBALS['ceon_uri_mapping_admin']) ? new CeonURIMappingAdminEZPagePages() : $GLOBALS['ceon_uri_mapping_admin'];
 	}
 
-	echo json_encode(utf8_encode($ceon_uri_mapping_admin->buildEZPageURIMappingFieldsForm()));
+	echo json_encode($ceon_uri_mapping_admin->buildEZPageURIMappingFieldsForm());
 	 ?>;
 	
 	var classList = document.getElementsByClassName("form-group");
