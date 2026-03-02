@@ -6,40 +6,41 @@
  * Zen Cart German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2024 Ceon
- * @copyright   Copyright 2003-2024 Zen Cart Development Team
+ * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: config.ceon_uri_mapping.php 2024-04-07 15:05:10Z webchills $
+ * @version     $Id: config.ceon_uri_mapping.php 2026-03-02 17:03:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
 	die('Illegal Access');
 } 
 
-$autoLoadConfig[0][] = array(
-	'autoType' => 'class',
-	'loadFile' => 'class.CeonURIMappingHandler.php',
-	);
+$autoLoadConfig[0][] = [
+    'autoType' => 'class',
+    'loadFile' => 'class.CeonURIMappingHandler.php',
+];
 
-$autoLoadConfig[95][] = array(
-	'autoType' => 'classInstantiate',
-	'className' => 'CeonURIMappingHandler',
-	'objectName' => 'ceon_uri_mapping',
-	);
+$autoLoadConfig[94][] = [
+    'autoType' => 'classInstantiate',
+    'className' => 'CeonURIMappingHandler',
+    'objectName' => 'ceon_uri_mapping',
+];
 //autoload to instantiate earlier than using auto.ceon_uri_mapping_link_build.php, for breadcrumbs
-$autoLoadConfig[0][] = array(
+$autoLoadConfig[0][] = [
     'autoType' => 'class',
     'loadFile' => 'observers/class.ceon_uri_mapping_link_build.php',
-     );
-$autoLoadConfig[99][] = array(
+];
+
+$autoLoadConfig[99][] = [
     'autoType' => 'classInstantiate',
     'className' => 'CeonUriMappingLinkBuild',
     'objectName' => 'ceon_uri_mapping_link_build',
-     );
+];
 
-$autoLoadConfig[45][] = array(
-	'autoType' => 'init_script',
-	'loadFile' => 'init_ceon_uri_mapping_sessions.php',
-);
+$autoLoadConfig[45][] = [
+    'autoType' => 'init_script',
+    'loadFile' => 'init_ceon_uri_mapping_sessions.php',
+];
