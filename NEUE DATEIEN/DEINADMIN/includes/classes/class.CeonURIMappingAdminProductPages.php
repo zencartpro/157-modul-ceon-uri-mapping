@@ -11,7 +11,7 @@
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingAdminProductPages.php 2026-04-05 14:53:15Z webchills $
+ * @version     $Id: class.CeonURIMappingAdminProductPages.php 2026-04-05 14:48:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -1222,10 +1222,10 @@ class CeonURIMappingAdminProductPages extends CeonURIMappingAdminProducts
 		global /*$db,*/ $messageStack;
 
 		// Generate new URI mapping for this new product?
-		$this->_uri_mapping_autogen = $_POST['uri-mapping'] == 'autogen';
+		$this->_uri_mapping_autogen = $_POST['uri-mapping'] ?? '' == 'autogen';
 
 		// Copy existing URIs from product being copied?
-		$uri_mapping_copy = $_POST['uri-mapping'] == 'copy';
+		$uri_mapping_copy = $_POST['uri-mapping'] ?? '' == 'copy';
 
 		if ($this->_uri_mapping_autogen || $uri_mapping_copy) {
 			if ($uri_mapping_copy) {

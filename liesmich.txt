@@ -181,7 +181,7 @@ Lesen Sie die umfangreiche Doku im Ordner DOKU ENGLISCH, um sich mit dem Modul u
 
 ____________________________________________________________________________________________________________________________________________
 
-HINWEIS zu Warning Logs unter PHP 8.k bei der Installation
+HINWEIS zu Warning Logs unter PHP 8.4 bei der Installation
 
 Bei Verwendung von PHP 8.4 kann es bei der Installation zu einigen völlig harmlosen Warning Errorlogs kommen.
 Die einfach ignorieren und löschen.
@@ -200,3 +200,7 @@ Dort werden Sie dann sehen, dass das Modul automatisch auf 5.1.5 aktualisiert wu
 Löschen Sie nun noch folgende Datei falls vorhanden:
 includes/extra_datafiles/ceon_uri_mapping_sessions_define.php
 Sie wird bereits seit 5.1.0 nicht mehr benötigt
+Prüfen Sie nun noch ob folgende Datei in Ihrer Installation vorhanden ist:
+includes/init_includes/overrides/init_add_crumbs.php
+Diese Datei wurde von CEON URI Mapping Version 5.1.4 und älter benötigt und vom Modul geändert.
+Löschen Sie diese Datei vom Server, dadurch wird wieder die Originaldatei in includes/init_includes verwendet.
