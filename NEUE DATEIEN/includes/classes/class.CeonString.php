@@ -7,11 +7,11 @@
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @author      Jan Schneider <jan@horde.org>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2008 The Horde Project (http://www.horde.org/)
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.fsf.org/copyleft/lgpl.html Lesser GNU Public License
- * @version     $Id: class.String.php 1028 2021-06-23 09:55:10Z webchills $
+ * @version     $Id: class.String.php 2026-04-05 09:55:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -49,7 +49,7 @@ $GLOBALS['string_language'] = null;
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @author      Jan Schneider <jan@horde.org>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2008 The Horde Project (http://www.horde.org/)
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.fsf.org/copyleft/lgpl.html Lesser GNU Public License
@@ -117,7 +117,7 @@ class CeonString
 		}
 		
 		if (is_array($input)) {
-			$tmp = array();
+			$tmp = [];
 			
 			foreach ($input as $key => $val) {
 				$tmp[CeonString::_convertCharset($key, $from, $to)] =
@@ -160,11 +160,11 @@ class CeonString
 		if (strlen($input) < 16777216 ||
 				(!CeonString::extensionExists('iconv') && !CeonString::extensionExists('mbstring'))) {
 			if ($from_ascii && ($to == 'utf-8')) {
-				return utf8_encode($input);
+				return $input;
 			}
 			
 			if (($from == 'utf-8') && $to_ascii) {
-				return utf8_decode($input);
+				return $input;
 			}
 		}
 		
@@ -258,7 +258,7 @@ class CeonString
 		
 		// Handle an array
 		if (is_array($input)) {
-			$tmp = array();
+			$tmp = [];
 			
 			foreach ($input as $key => $val) {
 				// Convert the characterset to UTF-8 if necessary
@@ -329,7 +329,7 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $string    The string to be converted.
-	 * @param   boolean   $locale    If true, the string will be converted based on a given charset, locale 
+	 * @param  bool  $locale    If true, the string will be converted based on a given charset, locale
 	 *                               independent otherwise.
 	 * @param   string    $charset   If $locale is true, the charset to use when converting. If not provided the 
 	 *                               current charset is used.
@@ -364,7 +364,7 @@ class CeonString
 		}
 		
 		if (!isset($lowers)) {
-			$lowers = array();
+			$lowers = [];
 		}
 		
 		if (!isset($lowers[$string])) {
@@ -391,7 +391,7 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $string    The string to be converted.
-	 * @param   boolean   $locale    If true, the string will be converted based on a given charset, locale 
+	 * @param  bool  $locale    If true, the string will be converted based on a given charset, locale
 	 *                               independent otherwise.
 	 * @param   string    $charset   If $locale is true, the charset to use when converting. If not provided the
 	 *                               current charset is used.
@@ -425,7 +425,7 @@ class CeonString
 		}
 		
 		if (!isset($uppers)) {
-			$uppers = array();
+			$uppers = [];
 		}
 		
 		if (!isset($uppers[$string])) {
@@ -452,7 +452,7 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $string    The string to have its first letter capitalised.
-	 * @param   boolean   $locale    If true, the string will be converted based on a given charset, locale
+	 * @param  bool  $locale    If true, the string will be converted based on a given charset, locale
 	 *                               independent otherwise.
 	 * @param   string    $charset   The charset to use, defaults to current charset.
 	 * @return  string    The capitalised string.
@@ -491,7 +491,7 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $string    The string to have its words capitalised.
-	 * @param   boolean   $locale    If true, the string will be converted based on a given charset, locale
+	 * @param  bool  $locale    If true, the string will be converted based on a given charset, locale
 	 *                               independent otherwise.
 	 * @param   string    $charset   The charset to use, defaults to current charset.
 	 * @return  string    The capitalised string.
@@ -560,8 +560,8 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $string    The string to be converted.
-	 * @param   integer   $start     The part's start position, (beginning at zero).
-	 * @param   integer   $length    The part's length.
+	 * @param  int  $start     The part's start position, (beginning at zero).
+	 * @param  int  $length    The part's length.
 	 * @param   string    $charset   The charset to use when calculating the part's position and length, defaults 
 	 *                               to current charset.
 	 * @return  string    The string's part.
@@ -621,7 +621,7 @@ class CeonString
 	 * @static
 	 * @param   string    $string    The string to return the length of.
 	 * @param   string    $charset   The charset to use when calculating the string's length.
-	 * @return  integer   The string's length.
+	 * @return  int   The string's length.
 	 */
 	public static function length($string, $charset = null)
 	{
@@ -642,7 +642,7 @@ class CeonString
 				return grapheme_strlen($string);
 			} else {
 				// Use standard PHP function
-				return strlen(utf8_decode($string));
+				return strlen(mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8'));
 			}
 		}
 		
@@ -672,10 +672,10 @@ class CeonString
 	 * @static
 	 * @param   string    $haystack   The string to search through.
 	 * @param   string    $needle     The string to search for.
-	 * @param   integer   $offset     Allows the specification of the character in haystack from which to start
+	 * @param  int  $offset     Allows the specification of the character in haystack from which to start
 	 *                                searching.
 	 * @param   string    $charset    The charset to use when searching.
-	 * @return  integer   The position of first occurrence.
+	 * @return  int   The position of first occurrence.
 	 */
 	public static function pos($haystack, $needle, $offset = 0, $charset = null)
 	{
@@ -727,7 +727,7 @@ class CeonString
 	 * @static
 	 * @param   string    $string    The string to test.
 	 * @param   string    $charset   The charset to use when testing the string.
-	 * @return  boolean   True if the string consists solely of alphabetic characters.
+	 * @return  bool   True if the string consists solely of alphabetic characters.
 	 */
 	public static function isAlpha($string, $charset = null)
 	{
@@ -778,7 +778,7 @@ class CeonString
 	 * @static
 	 * @param   string    $string    The string to test.
 	 * @param   string    $charset   The charset to use when testing the string.
-	 * @return  boolean   True if the string is lowercase.
+	 * @return  bool   True if the string is lowercase.
 	 */
 	public static function isLower($string, $charset = null)
 	{
@@ -799,7 +799,7 @@ class CeonString
 	 * @static
 	 * @param   string    $string    The string to test.
 	 * @param   string    $charset   The charset to use when testing the string.
-	 * @return  boolean   True if the string is uppercase.
+	 * @return  bool   True if the string is uppercase.
 	 */
 	public static function isUpper($string, $charset = null)
 	{
@@ -823,7 +823,7 @@ class CeonString
 	 * @param   array     $matches   A reference to a variable to be populated with an array of the matches if the
 	 *                               regexp matches.
 	 * @param   string    $charset   The character set of the text.
-	 * @return  boolean   Whether the regexp matched or not.
+	 * @return  bool   Whether the regexp matched or not.
 	 */
 	public static function regexpMatch($text, $regexp, &$matches, $charset = null)
 	{
@@ -845,7 +845,7 @@ class CeonString
 			$matches = CeonString::convertCharset($matches, 'utf-8', $charset);
 		}
 		
-		return ($num_matches == 1 ? true : false);
+		return $num_matches == 1;
 	}
 	
 	// }}}
@@ -863,7 +863,7 @@ class CeonString
 	 * @param   string|array    $regexp    The regular expression(s) to use.
 	 * @param   string|array    $replace   The replacement(s) to use.
 	 * @param   string          $charset   The character set of the text.
-	 * @return  string|array|boolean   The updated text or array or false if a problem occurred
+	 * @return  string|array|bool   The updated text or array or false if a problem occurred
 	 *                                 parsing the regular expression.
 	 */
 	public static function regexpReplace($text, $regexp, $replace, $charset = null)
@@ -925,7 +925,7 @@ class CeonString
 	 * @access  public
 	 * @static
 	 * @param   string    $regexp   The regular expression to validate.
-	 * @return  boolean   Whether or not the regexp is valid.
+	 * @return  bool   Whether or not the regexp is valid.
 	 * @TODO Have this throw exceptions
 	 */
 	public static function validateRegexp($regexp)
@@ -963,7 +963,7 @@ class CeonString
 		// charsets are used, for example, by various versions of Outlook to send Korean characters. Use UHC
 		// (CP949) encoding instead. See, e.g.
 		// http://lists.w3.org/Archives/Public/ietf-charsets/2001AprJun/0030.html
-		if (in_array(CeonString::toLowercase($charset), array('ks_c_5601-1987', 'ks_c_5601-1989'))) {
+		if (in_array(CeonString::toLowercase($charset), ['ks_c_5601-1987', 'ks_c_5601-1989'])) {
 			$charset = 'UHC';
 		}
 		
@@ -981,11 +981,11 @@ class CeonString
 	 * @access  private
 	 * @static
 	 * @param   string    $extension   The extension's name.
-	 * @return  boolean   Whether the extension is loaded in PHP.
+	 * @return  bool   Whether the extension is loaded in PHP.
 	 */
 	protected static function extensionExists($extension)
 	{
-		static $cache = array();
+		static $cache = [];
 		
 		if (!isset($cache[$extension])) {
 			$cache[$extension] = extension_loaded($extension);

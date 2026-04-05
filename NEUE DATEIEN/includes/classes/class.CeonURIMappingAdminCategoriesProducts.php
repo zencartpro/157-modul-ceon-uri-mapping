@@ -9,11 +9,11 @@
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2022 Zen Cart Development Team
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingAdminCategoriesProducts.php 2022-07-19 20:43:10Z webchills $
+ * @version     $Id: class.CeonURIMappingAdminCategoriesProducts.php 2026-04-05 11:43:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -70,22 +70,21 @@ class CeonURIMappingAdminCategoriesProducts extends CeonURIMappingAdmin
 	 * Generates a URI mapping for a category or a product, for the specified language.
 	 *
 	 * @access  public
-	 * @param   integer   $id              The ID of the category/product.
-	 * @param   string    $type            Whether the ID corresponds to a category or a product.
-	 * @param   integer   $parent_category_id   The ID of the parent category (used if the details in the database
-	 *                                          could be out of date as new information is being submitted when the
-	 *                                          URI is being generated).
-	 * @param   string    $name                 The name of category/product (used if new information is being
-	 *                                          submitted when the URI is being generated).
-	 * @param   string    $language_code   The ISO 639 language code of the language.
-	 * @param   integer   $language_id     The Zen Cart language ID for the language.
-	 * @return  string    The auto-generated URI for the category/product and language.
-	 */
-	public function autogenCategoryOrProductURIMapping($id, $type, $parent_category_id, $name, $language_code,
-		$language_id)
-	{
+     * @param  int  $id  The ID of the category/product.
+     * @param  string  $type  Whether the ID corresponds to a category or a product.
+     * @param  int  $parent_category_id  The ID of the parent category (used if the details in the database
+     *                                          could be out of date as new information is being submitted when the
+     *                                          URI is being generated).
+     * @param  string  $name  The name of category/product (used if new information is being
+     *                                          submitted when the URI is being generated).
+     * @param  string  $language_code  The ISO 639 language code of the language.
+     * @param  int  $language_id  The Zen Cart language ID for the language.
+     * @return int|string The auto-generated URI for the category/product and language.
+     */
+	public function autogenCategoryOrProductURIMapping(int $id, string $type, int $parent_category_id, string $name, string $language_code, int $language_id): int|string
+    {
 		//global $db;
-		
+
 		// Get the complete path to this category/product, or the parent category if this is a new category/product
 		if (is_null($name)) {
 			$category_and_product_path_array = $this->getCategoryOrProductPath($id, $type, $language_id);
@@ -93,15 +92,15 @@ class CeonURIMappingAdminCategoriesProducts extends CeonURIMappingAdmin
 			$category_and_product_path_array =
 				$this->getCategoryOrProductPath($parent_category_id, 'category', $language_id);
 		}
-		
+
 		$category_and_product_path_array = array_reverse($category_and_product_path_array);
-		
-		if (!is_null($name) || count($category_and_product_path_array) == 0) {
+
+		if (!is_null($name) || count($category_and_product_path_array) === 0) {
 			// Must add the new category/product's name to the path array
 			$category_and_product_path_array[] = $name;
 		}
-		
-		// Must not generate URIs for any category or product which has no name.. would conflict with parent
+
+		// Must not generate URIs for any category or product which has no name... would conflict with parent
 		// category (manual mapping can be used if that behaviour is required).
 		$num_categories_products = count($category_and_product_path_array);
 		
@@ -152,26 +151,26 @@ class CeonURIMappingAdminCategoriesProducts extends CeonURIMappingAdmin
 	 * Looks up the hierarchy of the parent categories for the given category/product.
 	 *
 	 * @access  public
-	 * @param   integer   $id            The ID of the category/product.
-	 * @param   string    $for           Either 'category' or 'product'.
-	 * @param   integer   $language_id   The ID of the language of the category names to lookup.
-	 * @param   array     $categories_array   Used internally as part of recursion process.
-	 * @return  array     A hierarchical array of the parent categories (if any) for the given category/product,
+	 * @param  int  $id            The ID of the category/product.
+	 * @param  string  $for           Either 'category' or 'product'.
+	 * @param  int  $language_id   The ID of the language of the category names to lookup.
+	 * @param  array|string  $categories_array   Used internally as part of recursion process.
+	 * @return  array|string     A hierarchical array of the parent categories (if any) for the given category/product,
 	 *                    from the "leaf" product/category back to the "root/top" category.
 	 */
-	public function getCategoryOrProductPath($id, $for, $language_id, $categories_array = '')
-	{
+	public function getCategoryOrProductPath(int $id, string $for, int $language_id, array|string $categories_array = ''): array|string
+    {
 		global $db;
-		
+
 		if (!is_array($categories_array)) {
-			$categories_array = array();
+			$categories_array = [];
 		}
-		
+
 		if ($id == 0) {
 			return $categories_array;
 		}
-		
-		if ($for == 'product') {
+
+		if ($for === 'product') {
 			$master_category = $db->Execute("
 				SELECT
 					pd.products_name,
@@ -217,7 +216,7 @@ class CeonURIMappingAdminCategoriesProducts extends CeonURIMappingAdmin
 					}
 				}
 			}
-		} else if ($for == 'category') {
+		} elseif ($for === 'category') {
 			$category = $db->Execute("
 				SELECT
 					cd.categories_name,
@@ -235,7 +234,7 @@ class CeonURIMappingAdminCategoriesProducts extends CeonURIMappingAdmin
 			$categories_array[] = $category->fields['categories_name'];
 			
 			if ((zen_not_null($category->fields['parent_id'])) && ($category->fields['parent_id'] != '0')) {
-				$categories_array = $this->getCategoryOrProductPath($category->fields['parent_id'], 'category',
+				$categories_array = $this->getCategoryOrProductPath((int)$category->fields['parent_id'], 'category',
 					$language_id, $categories_array);
 			}
 		}

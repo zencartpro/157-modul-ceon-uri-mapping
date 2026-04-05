@@ -5,12 +5,12 @@
  * Zen Cart German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2021 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingInstallOrUpgrade.php 2024-04-07 14:55:05Z webchills $
+ * @version     $Id: class.CeonURIMappingInstallOrUpgrade.php 2026-04-05 14:55:05Z webchills $
  */
 
 
@@ -22,7 +22,7 @@
  *
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2019 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
@@ -51,52 +51,52 @@ class CeonURIMappingInstallOrUpgrade
 	/**
 	 * Tracks if any updates were performed.
 	 *
-	 * @var     boolean
+	 * @var     bool
 	 * @access  protected
 	 */
 	protected $_actions_performed = false;
-	
+
 	/**
 	 * Tracks if the URI mappings table has just been created.
 	 *
-	 * @var     boolean
+	 * @var     bool
 	 * @access  protected
 	 */
 	protected $_uri_mappings_table_created = false;
-	
+
 	/**
 	 * Tracks if the configs table has just been created.
 	 *
-	 * @var     boolean
+	 * @var     bool
 	 * @access  protected
 	 */
 	protected $_uri_mapping_configs_table_created = false;
-	
+
 	/**
 	 * Tracks if the product related pages URI parts table has just been created.
 	 *
-	 * @var     boolean
+	 * @var     bool
 	 * @access  protected
 	 */
 	protected $_uri_mapping_prp_uri_parts_table_created = false;
-	
+
 	/**
 	 * Maintains a list of any errors encountered in an installation or upgrade.
 	 *
 	 * @var     array
 	 * @access  public
 	 */
-	public $error_messages = array();
-	
+	public $error_messages = [];
+
 	// }}}
-	
-	
+
+
 	// {{{ Class Constructor
-	
+
 	/**
 	 * Creates a new instance of the class. Installs/upgrades the database and adds or updates configuration
 	 * options.
-	 * 
+	 *
 	 * @access  public
 	 * @param   string    $version   The version of the module.
 	 * @param   string    $installed_version   The currently installed version of the module.
@@ -104,46 +104,46 @@ class CeonURIMappingInstallOrUpgrade
 	public function __construct($version, $installed_version)
 	{
 		global $db;
-		
+
 		$this->_version = $version;
-		
+
 		$this->_installed_version = $installed_version;
-		
+
 		$this->_checkCreateDatabases();
-		
+
 		if (count($this->error_messages) > 0) {
 			// Can't progress without working databases
 			return;
 		}
-		
+
 		// Make sure the product related pages URI parts table is fully populated as it may be needed to upgrade
 		// from any previous version
 		$this->_checkProductRelatedPagesURIPartsExistForLanguages();
-		
+
 		$database_up_to_date = $this->_ensureDatabaseIsUpToDate();
-		
+
 		$this->_checkForDefaultConfig();
-		
+
 		if (!isset($this->_installed_version) || ((int) substr($this->_installed_version, 0, 1)) < 4) {
 			$this->_changeDefaultRemoveWordsSetting();
 		}
-		
+
 		$this->_checkZenCartConfigGroupAndOption();
-		
+
 		if (isset($this->_installed_version) && (!$this->_uri_mappings_table_created &&
-				substr($this->_installed_version, 0, 1) == '2' ||
-				substr($this->_installed_version, 0, 3) == '3.0' ||
-				substr($this->_installed_version, 0, 3) == '3.2' || $this->_installed_version == '3.4.0')) {
+                str_starts_with($this->_installed_version, '2') ||
+                str_starts_with($this->_installed_version, '3.0') ||
+                str_starts_with($this->_installed_version, '3.2') || $this->_installed_version == '3.4.0')) {
 			// From 3.4.1 onwards the index page is always mapped to the main directory - i.e. the value of
 			// DIR_WS_CATALOG (e.g. / or /shop). Make any mappings for the index page historical
 			$this->_makeIndexPageMappingsHistorical();
 		}
-		
+
 		if (!isset($this->_installed_version) || ((int) substr($this->_installed_version, 0, 1)) < 4) {
 			$this->_stripTrailingSlashesFromMappings();
 		}
-		
-		// If updates were performed and all were successful, update version number 
+
+		// If updates were performed and all were successful, update version number
 		if (count($this->error_messages) == 0 && $this->_installed_version != $this->_version) {
 			// Only one config currently supported so the ID is hard-coded in the following SQL
 			$update_db_version_number_sql = "
@@ -153,59 +153,59 @@ class CeonURIMappingInstallOrUpgrade
 					version = '" . $this->_version . "'
 				WHERE
 					id = '1';";
-			
+
 			$update_db_version_number_result = $db->Execute($update_db_version_number_sql);
-			
+
 			// Reset the version check status as it may change when the software is upgraded
 			if (isset($this->_ceon_base_model_code) && isset($_SESSION[$this->_ceon_base_model_code . '_vc_response'])) {
 				unset($_SESSION[$this->_ceon_base_model_code . '_vc_response']);
 			}
 		}
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ actionPerformed()
-	
+
 	/**
-	 * Simply returns whether or not any action was performed during the running of this instance.
+	 * Simply returns whether any action was performed during the running of this instance.
 	 *
 	 * @access  public
-	 * @return  boolean   Whether or not any action was performed.
+	 * @return  bool   Whether any action was performed.
 	 */
 	public function actionPerformed()
 	{
-		return $this->_actions_performed;		
+		return $this->_actions_performed;
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _checkCreateDatabases()
-	
+
 	/**
 	 * Makes sure that the database tables exist. Creates any that don't.
 	 *
 	 * @access  protected
-	 * @return  boolean   False if a problem occurred when creating a database table, true otherwise.
+	 * @return  bool   False if a problem occurred when creating a database table, true otherwise.
 	 */
 	protected function _checkCreateDatabases()
 	{
 		global $db, $messageStack;
-		
+
 		// Add the URI Mappings table if it doesn't exist
 		$table_exists_query = 'SHOW TABLES LIKE "' . TABLE_CEON_URI_MAPPINGS . '";';
 		$table_exists_result = $db->Execute($table_exists_query);
-		
+
 		if ($table_exists_result->EOF) {
 			if (!$this->_DBUserHasPrivilege('CREATE')) {
 				$this->error_messages[] = 'Database table could not be created! The database user may not have' .
 					' CREATE TABLE privileges?!';
-				
+
 				return false;
 			}
-			
+
 			$create_uri_mappings_table_sql = "
 				CREATE TABLE
 					`" . TABLE_CEON_URI_MAPPINGS . "`
@@ -221,40 +221,40 @@ class CeonURIMappingInstallOrUpgrade
 					`date_added` DATETIME DEFAULT NULL,
 					INDEX `assoc_db_id_idx` (`language_id`, `current_uri`, `main_page`, `associated_db_id`)
 					);";
-			
+
 			$create_uri_mappings_table_result = $db->Execute($create_uri_mappings_table_sql);
-			
+
 			// Check the table was created
 			$table_exists_query = 'SHOW TABLES LIKE "' . TABLE_CEON_URI_MAPPINGS . '";';
 			$table_exists_result = $db->Execute($table_exists_query);
-			
+
 			if ($table_exists_result->EOF) {
 				$this->error_messages[] = 'Database table could not be created! The database user may not have' .
 					' CREATE TABLE privileges?!';
-				
+
 				return false;
 			}
-			
+
 			$this->_actions_performed = true;
-			
+
 			$this->_uri_mappings_table_created = true;
-			
+
 			$messageStack->add('Mappings database table successfully created.', 'success');
 		}
-		
-		
+
+
 		// Add the configuration table if it doesn't exist
 		$table_exists_query = 'SHOW TABLES LIKE "' . TABLE_CEON_URI_MAPPING_CONFIGS . '";';
 		$table_exists_result = $db->Execute($table_exists_query);
-		
+
 		if ($table_exists_result->EOF) {
 			if (!$this->_DBUserHasPrivilege('CREATE')) {
 				$this->error_messages[] = 'Database table could not be created! The database user may not have' .
 					' CREATE TABLE privileges?!';
-				
+
 				return false;
 			}
-			
+
 			$create_uri_mapping_configs_table_sql = "
 				CREATE TABLE IF NOT EXISTS
 					`" . TABLE_CEON_URI_MAPPING_CONFIGS . "`
@@ -364,16 +364,16 @@ class CeonURIMappingInstallOrUpgrade
 		$languages = zen_get_languages();
 		
 		// Check if URI parts are missing for any language
-		$page_types = array(
+		$page_types = [
 			'product_reviews',
 			'product_reviews_info',
 			'product_reviews_write',
 			'ask_a_question'
-			);
-		
+        ];
+
 		// Variable holds the list of URIs parts for each language as currently specified in the database
-		$current_uri_parts = array();
-		
+		$current_uri_parts = [];
+
 		$current_uri_parts_sql = "
 			SELECT
 				page_type,
@@ -388,7 +388,7 @@ class CeonURIMappingInstallOrUpgrade
 		
 		while (!$current_uri_parts_result->EOF) {
 			if (!isset($current_uri_parts[$current_uri_parts_result->fields['language_code']])) {
-				$current_uri_parts[$current_uri_parts_result->fields['language_code']] = array();
+				$current_uri_parts[$current_uri_parts_result->fields['language_code']] = [];
 			}
 			
 			$current_uri_parts[$current_uri_parts_result->fields['language_code']]
@@ -431,19 +431,19 @@ class CeonURIMappingInstallOrUpgrade
 		
 		// Variable holds the list of URIs parts for each language as defined in the language 
 		// definition files for each language
-		$default_uri_parts = array();
-		
+		$default_uri_parts = [];
+
 		// Attempt to get the specific defines for each store the language uses
 		for ($i = 0, $n = count($languages); $i < $n; $i++) {
 			$language_name = $languages[$i]['name'];
-			
+
 			$language_code_lower = strtolower($languages[$i]['code']);
 			$language_code_upper = strtoupper($languages[$i]['code']);
-			
+
 			if (file_exists(DIR_WS_LANGUAGES . $language_name . 'ceon_uri_mapping_default_uri_parts.php')) {
 				include_once (DIR_WS_LANGUAGES . $language_name . 'ceon_uri_mapping_default_uri_parts.php');
-				
-				$default_uri_parts[$language_code_lower] = array();
+
+				$default_uri_parts[$language_code_lower] = [];
 				
 				foreach ($page_types as $page_type) {
 					if (defined('DEFAULT_URI_PART_' . strtoupper($page_type) . $language_code_upper)) {
@@ -465,7 +465,7 @@ class CeonURIMappingInstallOrUpgrade
 			$language_code = strtolower($languages[$i]['code']);
 			
 			if (!isset($default_uri_parts[$language_code])) {
-				$default_uri_parts[$language_code] = array();
+				$default_uri_parts[$language_code] = [];
 			}
 			
 			
@@ -530,7 +530,7 @@ class CeonURIMappingInstallOrUpgrade
 	 * Makes sure that the database tables are up to date.
 	 *
 	 * @access  protected
-	 * @return  boolean   False if a problem occurred when updating a database table, true otherwise.
+	 * @return  bool   False if a problem occurred when updating a database table, true otherwise.
 	 */
 	protected function _ensureDatabaseIsUpToDate()
 	{
@@ -569,14 +569,14 @@ class CeonURIMappingInstallOrUpgrade
 	 * really old versions.
 	 *
 	 * @access  protected
-	 * @return  boolean   Whether or not the database table is up to date.
+	 * @return  bool   Whether the database table is up to date.
 	 */
 	protected function _checkUpdateURIMappingsTable()
 	{
 		global $db, $messageStack;
 		
 		// Get the list of columns in the database table
-		$columns = array();
+		$columns = [];
 		
 		$columns_query = 'SHOW COLUMNS FROM ' . TABLE_CEON_URI_MAPPINGS . ';';
 		$columns_result = $db->Execute($columns_query);
@@ -611,7 +611,7 @@ class CeonURIMappingInstallOrUpgrade
 			$columns_query = 'SHOW COLUMNS FROM ' . TABLE_CEON_URI_MAPPINGS . ';';
 			$columns_result = $db->Execute($columns_query);
 			
-			$columns = array();
+			$columns = [];
 			
 			while (!$columns_result->EOF) {
 				$columns[] = $columns_result->fields['Field'];
@@ -619,7 +619,7 @@ class CeonURIMappingInstallOrUpgrade
 			}
 			
 			if (!in_array('current_uri', $columns)) {
-				// Unable to add column to table! The database user may not actually have ALTER TABLE privileges
+				// Unable to add column to table! The database user may not have ALTER TABLE privileges
 				$this->error_messages[] = 'Unable to add column to table! The database user may' .
 					' not have ALTER TABLE privileges';
 				
@@ -718,7 +718,7 @@ class CeonURIMappingInstallOrUpgrade
 			$columns_query = 'SHOW COLUMNS FROM ' . TABLE_CEON_URI_MAPPINGS . ';';
 			$columns_result = $db->Execute($columns_query);
 			
-			$columns = array();
+			$columns = [];
 			
 			while (!$columns_result->EOF) {
 				$columns[] = $columns_result->fields['Field'];
@@ -726,7 +726,7 @@ class CeonURIMappingInstallOrUpgrade
 			}
 			
 			if (!in_array('query_string_parameters', $columns)) {
-				// Unable to add column to table! The database user may not actually have ALTER TABLE privileges
+				// Unable to add column to table! The database user may not have ALTER TABLE privileges
 				$this->error_messages[] = 'Unable to add column to table! The database user may' .
 					' not have ALTER TABLE privileges';
 				
@@ -791,7 +791,7 @@ class CeonURIMappingInstallOrUpgrade
 		$indexes_exist_query = 'SHOW INDEXES FROM ' . TABLE_CEON_URI_MAPPINGS . ';';
 		$indexes_exist_result = $db->Execute($indexes_exist_query);
 		
-		$indexes = array();
+		$indexes = [];
 		
 		while (!$indexes_exist_result->EOF) {
 			$indexes[] = $indexes_exist_result->fields['Column_name'];
@@ -906,28 +906,28 @@ class CeonURIMappingInstallOrUpgrade
 				// Must add the default URI mappings for the other product-related pages
 				$uri_mapping = $uri_mappings_result->fields['uri'];
 				
-				if (substr($uri_mapping, -1) != '/') {
+				if ( ! str_ends_with($uri_mapping, '/')) {
 					$uri_mapping .= '/';
 				}
-				
-				$sql_data_array = array(
+
+				$sql_data_array = [
 					'language_id' => $uri_mappings_result->fields['language_id'],
 					'current_uri' => 1,
 					'associated_db_id' => $associated_db_id,
 					'alternate_uri' => 'null',
 					'redirection_type_code' => '301',
 					'date_added' => $uri_mappings_result->fields['date_added']
-					);
-				
+                ];
+
 				require_once(DIR_WS_FUNCTIONS . 'ceon_uri_mapping_products.php');
-				
-				$page_types = array(
+
+				$page_types = [
 					'product_reviews',
 					'product_reviews_info',
 					'product_reviews_write',
 					'ask_a_question'
-					);
-				
+                ];
+
 				// Get the language code for the mapping's language
 				for ($i = 0, $n = count($languages); $i < $n; $i++) {
 					if ($languages[$i]['id'] == $uri_mappings_result->fields['language_id']) {
@@ -1056,14 +1056,14 @@ class CeonURIMappingInstallOrUpgrade
 	 * Adds any columns which are missing from the configs table and removes an unneeded column.
 	 *
 	 * @access  protected
-	 * @return  boolean   Whether or not the database table is up to date.
+	 * @return  bool   Whether the database table is up to date.
 	 */
 	protected function _checkUpdateConfigsTable()
 	{
 		global $db, $messageStack;
-		
+
 		// Get the list of columns in the database table
-		$columns = array();
+		$columns = [];
 		
 		$columns_query = 'SHOW COLUMNS FROM ' . TABLE_CEON_URI_MAPPING_CONFIGS . ';';
 		$columns_result = $db->Execute($columns_query);
@@ -1099,15 +1099,15 @@ class CeonURIMappingInstallOrUpgrade
 		$columns_query = 'SHOW COLUMNS FROM ' . TABLE_CEON_URI_MAPPING_CONFIGS . ';';
 		$columns_result = $db->Execute($columns_query);
 		
-		$columns = array();
-		
+		$columns = [];
+
 		while (!$columns_result->EOF) {
 			$columns[] = $columns_result->fields['Field'];
 			$columns_result->MoveNext();
 		}
-		
+
 		if (!in_array('language_code_add', $columns)) {
-			// Unable to add column to table! The database user may not actually have ALTER TABLE privileges
+			// Unable to add column to table! The database user may not have ALTER TABLE privileges
 			$this->error_messages[] = 'Unable to add column to table! The database user may not have ALTER TABLE' .
 				' privileges';
 			
@@ -1312,7 +1312,7 @@ class CeonURIMappingInstallOrUpgrade
 		
 		$orig_remove_words = explode(',', $remove_words);
 		
-		$new_remove_words = array();
+		$new_remove_words = [];
 		
 		for ($i = 0, $n = count($orig_remove_words); $i < $n; $i++) {
 			$orig_remove_words[$i] = trim($orig_remove_words[$i]);
@@ -1347,7 +1347,7 @@ class CeonURIMappingInstallOrUpgrade
 	 * either is missing, it is created.
 	 *
 	 * @access  protected
-	 * @return  boolean   Whether or not the configuration group and option are present and valid.
+	 * @return  bool   Whether the configuration group and option are present and valid.
 	 */
 	protected function _checkZenCartConfigGroupAndOption()
 	{
@@ -1468,7 +1468,7 @@ class CeonURIMappingInstallOrUpgrade
 					'Enable/Disable URI Mapping',
 					'CEON_URI_MAPPING_ENABLED',
 					'1',
-					'If enabled, any Categories/Products/Manufacturers/EZ-Pages/other pages which have a static URI Mapping specified for them in the database will use those static URIs instead of the standard Zen Cart dynamically-built URIs.<br /><br />0 = off <br />1 = on',
+					'If enabled, any Categories/Products/Manufacturers/EZ-Pages/other pages which have a static URI Mapping specified for them in the database will use those static URIs instead of the standard Zen Cart dynamically-built URIs.<br><br>0 = off <br>1 = on',
 					'" . $configuration_group_id . "',
 					'1',
 					'zen_cfg_select_option(array(''0'', ''1''), ',
@@ -1562,7 +1562,7 @@ class CeonURIMappingInstallOrUpgrade
 			
 			$uri = $uris_with_trailing_slashes_result->fields['uri'];
 			
-			while (substr($uri, -1) == '/') {
+			while (str_ends_with($uri, '/')) {
 				$uri = substr($uri, 0, strlen($uri) - 1);
 			}
 			
@@ -1602,7 +1602,7 @@ class CeonURIMappingInstallOrUpgrade
 	 *
 	 * @access  protected
 	 * @param   string    $privilege_type   The type of privilege to be checked for.
-	 * @return  boolean   Whether or not the current database user has the specified privilege.
+	 * @return  bool   Whether the current database user has the specified privilege.
 	 */
 	protected function _DBUserHasPrivilege($privilege_type)
 	{
@@ -1641,8 +1641,8 @@ class CeonURIMappingInstallOrUpgrade
 					$database_name = str_replace('\_', '_', $database_name);
 					
 					if (($database_name == '*' || $database_name == DB_DATABASE) &&
-							(strpos($privilege_string, 'ALL PRIVILEGES') !== false ||
-							strpos($privilege_string, $privilege_type) !== false)) {
+							(str_contains($privilege_string, 'ALL PRIVILEGES') ||
+                                str_contains($privilege_string, $privilege_type))) {
 						// This grant gives the specified privilege for the Zen Cart database, no need to examine
 						// any others
 						$db_user_has_privilege = true;

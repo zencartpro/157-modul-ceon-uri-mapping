@@ -24,12 +24,12 @@ if (!defined('IS_ADMIN_FLAG')) {
 	die('Illegal Access');
 } 
 
-$autoLoadConfig[0][] = array(
-	'autoType' => 'class',
-	'loadFile' => 'observers/class.ceon_ask_a_question.php',
-	);
-$autoLoadConfig[200][] = array(
+$autoLoadConfig[0][] = [
+    'autoType' => 'class',
+    'loadFile' => 'observers/class.ceon_ask_a_question.php',
+];
+$autoLoadConfig[200][] = [
     'autoType' => 'classInstantiate',
     'className' => 'zcObserverCeonAskAQuestion',
     'objectName' => 'ceon_ask_a_question',
-     );
+];

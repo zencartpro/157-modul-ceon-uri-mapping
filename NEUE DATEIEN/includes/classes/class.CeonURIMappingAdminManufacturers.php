@@ -7,12 +7,12 @@
  *
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2019 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingAdminManufacturers.php 1027 2012-07-17 20:31:10Z conor $
+ * @version     $Id: class.CeonURIMappingAdminManufacturers.php 2026-04-05 11:31:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -68,19 +68,19 @@ class CeonURIMappingAdminManufacturers extends CeonURIMappingAdmin
 	 * Generates a URI mapping for a manufacturer, for the specified language.
 	 *
 	 * @access  public
-	 * @param   integer   $id              The ID of the manufacturer.
-	 * @param   string    $name            The name of manufacturer (used if new information is
-	 *                                     being submitted when the URI is being generated).
-	 * @param   string    $language_code   The ISO 639 language code of the language.
-	 * @param   integer   $language_id     The Zen Cart language ID for the language.
-	 * @return  string    The auto-generated URI for the manufacturer and language.
-	 */
-	public function autogenManufacturerURIMapping($id, $name, $language_code, $language_id)
-	{
+     * @param  int  $id  The ID of the manufacturer.
+     * @param  null|string  $name  The name of manufacturer (used if new information is
+     *                                     being submitted when the URI is being generated).
+     * @param  string  $language_code  The ISO 639 language code of the language.
+     * @param  int  $language_id  The Zen Cart language ID for the language.
+     * @return int|string|null The auto-generated URI for the manufacturer and language.
+     */
+	public function autogenManufacturerURIMapping(int $id, ?string $name, string $language_code, int $language_id): int|string|null
+    {
 		global $db;
-		
+
 		if (is_null($name)) {
-			// Load name from database
+			// Assume name will be used... load name from database
 			$manufacturer_name_result = $db->Execute("
 				SELECT
 					manufacturers_name

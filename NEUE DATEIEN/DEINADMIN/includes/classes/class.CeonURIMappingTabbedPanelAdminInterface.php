@@ -5,12 +5,12 @@
  * Zen Cart German Specific
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2021 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingTabbedPanelAdminInterface.php 2021-06-23 09:45:15Z webchills $
+ * @version     $Id: class.CeonURIMappingTabbedPanelAdminInterface.php 2026-04-05 14:45:15Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -32,7 +32,7 @@ require_once(DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.CeonURIMappingAdmin.php');
  * @package     ceon_uri_mapping
  * @abstract
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
- * @copyright   Copyright 2008-2019 Ceon
+ * @copyright   Copyright 2008-2024 Ceon
  * @copyright   Copyright 2003-2019 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
@@ -41,97 +41,96 @@ require_once(DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.CeonURIMappingAdmin.php');
 class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 {
 	// {{{ properties
-	
+
 	/**
 	 * The Ceon base model code for the module this admin interface is being built for.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_ceon_base_model_code = null;
-	
+	protected ?string $_ceon_base_model_code = null;
+
 	/**
 	 * The Ceon model edition code of the module this admin interface is being built for.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_ceon_model_edition_code = null;
-	
+	protected ?string $_ceon_model_edition_code = null;
+
 	/**
 	 * The version of the module this admin interface is being built for.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_version = null;
-	
+	protected ?string $_version = null;
+
 	/**
 	 * The localised edition title of the module this admin interface is being built for.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_edition_title = null;
-	
+	protected ?string $_edition_title = null;
+
 	/**
 	 * The version of the module that is currently installed.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_installed_version = null;
-	
+	protected ?string $_installed_version = null;
+
 	/**
 	 * The start year of the copyright range for the module.
 	 *
-	 * @var     integer
+	 * @var     int|null
 	 * @access  protected
 	 */
-	protected $_copyright_start_year = null;
-	
+	protected ?int $_copyright_start_year = null;
+
 	/**
 	 * The URI part for the module's web address.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_web_address_uri_part = null;
-	
+	protected ?string $_web_address_uri_part = null;
+
 	/**
-	 * Whether or not automatic version checking is enabled.
+	 * Whether automatic version checking is enabled.
 	 *
-	 * @var     boolean
+	 * @var     bool|null
 	 * @access  protected
 	 */
-	protected $_automatic_version_checking = null;
-	
+	protected ?bool $_automatic_version_checking = null;
+
 	/**
 	 * The list of panels that this instance is to use.
 	 *
 	 * @var     array
 	 * @access  protected
 	 */
-	protected $_panels = array();
-	
+	protected array $_panels = [];
+
 	/**
 	 * The HTML output built by this instance.
 	 *
-	 * @var     string
+	 * @var     string|null
 	 * @access  protected
 	 */
-	protected $_output = null;
-	
+	protected ?string $_output = null;
+
 	// }}}
-	
-	
+
+
 	// {{{ Class Constructor
-	
+
 	/**
 	 * Creates a new instance of the class.
-	 * 
-	 * @param   boolean   Whether or not the autogeneration configuration should be loaded when
-	 *                    instantiating the class.
+	 *
+	 * Whether the autogeneration configuration should be loaded when instantiating the class.
 	 * @access  public
 	 */
 	public function __construct($load_config = true)
@@ -144,7 +143,7 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 		
 		if (!defined('TEXT_ERROR_VERSION_CHECK_PROBLEM') && $_SESSION['language'] != 'german') {
 			// Fall back to english language file
-			@include_once(DIR_WS_LANGUAGES . 'german/' . 'ceon_uri_mapping_tabbed_panel_admin_interface.php');
+			include_once(DIR_WS_LANGUAGES . 'german/' . 'ceon_uri_mapping_tabbed_panel_admin_interface.php');
 		}
 	}
 	
@@ -158,7 +157,7 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 *
 	 * @access  protected
 	 * @abstract
-	 * @return  boolean   True if the version number check completed without failure, false otherwise. The module
+	 * @return  bool   True if the version number check completed without failure, false otherwise. The module
 	 *                    not being installed yet is not counted as a failure.
 	 */
 	protected function _lookUpInstalledVersion() {}
@@ -172,9 +171,9 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 * Simply returns the Ceon model edition code for the software.
 	 *
 	 * @access  public
-	 * @return  string    The Ceon model edition code for this software.
+	 * @return  null|string    The Ceon model edition code for this software.
 	 */
-	public function getEditionCode()
+	public function getEditionCode(): ?string
 	{
 		return $this->_ceon_model_edition_code;
 	}
@@ -188,25 +187,25 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 * Simply returns the version of the software.
 	 *
 	 * @access  public
-	 * @return  string    The version of this software.
-	 */
-	public function getVersion()
-	{
+     * @return string|null The version of this software.
+     */
+	public function getVersion(): ?string
+    {
 		return $this->_version;
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ getOutput()
-	
-	/**
-	 * Simply returns the output built by this instance.
-	 *
-	 * @access  public
-	 * @return  string    The HTML output for the configuration utility's output.
-	 */
-	public function getOutput()
+
+    /**
+     * Simply returns the output built by this instance.
+     *
+     * @access  public
+     * @return string|null The HTML output for the configuration utility's output.
+     */
+	public function getOutput(): ?string
 	{
 		return $this->_output;
 	}
@@ -222,19 +221,19 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 * @access  protected
 	 * @param   string    $id        The ID of the panel.
 	 * @param   string    $title     The title of the panel, to be used as the tab's text.
-	 * @param   string    $link      If the tab is to link to another page, the link.
-	 * @param   string    $content   If the panel's content is to be displayed directly within the tabbed panel
+	 * @param  string|null  $link      If the tab is to link to another page, the link.
+	 * @param  string|null  $content   If the panel's content is to be displayed directly within the tabbed panel
 	 *                               admin interface, the content that makes up the panel.
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _addPanel($id, $title, $link, $content = null)
+	protected function _addPanel(string $id, string $title, ?string $link, ?string $content = null): void
 	{
-		$this->_panels[] = array(
+		$this->_panels[] = [
 			'id' => $id,
 			'title' => $title,
 			'link' => $link,
 			'content' => $content
-			);
+        ];
 	}
 	
 	// }}}
@@ -246,9 +245,9 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 * Gets the ID of the panel which should be selected by default when the tabbed panel admin interface is built.
 	 *
 	 * @access  protected
-	 * @return  string    The ID of the selected panel.
-	 */
-	protected function _getSelectedPanelID()
+     * @return string|null The ID of the selected panel.
+     */
+	protected function _getSelectedPanelID(): ?string
 	{
 		return null;
 	}
@@ -263,21 +262,21 @@ class CeonURIMappingTabbedPanelAdminInterface extends CeonURIMappingAdmin
 	 * be used to show/hide the various panels or navigate between the various panels' pages. 
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _buildTabbedPanelMenu()
+	protected function _buildTabbedPanelMenu(): void
 	{
 		$selected_panel_id = $this->_getSelectedPanelID();
 		
 		// Have the panel selected and displayed automatically
 		if (!is_null($selected_panel_id)) {
-			$this->_output .= '<style type="text/css">' . "\n";
+			$this->_output .= '<style>' . "\n";
 			$this->_output .= 'fieldset#' . $selected_panel_id . ' { display: block; }' . "\n";
 			$this->_output .= '</style>' . "\n";
 		}
 		
 		$this->_output .= <<<TABBED_PANELS_MENU_JS
-<script type="text/javascript">
+<script>
 var current_panel_id = '$selected_panel_id';
 
 function CeonShowPanel(id) {
@@ -303,7 +302,7 @@ function CeonShowPanel(id) {
 }
 </script>
 <noscript>
-<style type="text/css">
+<style>
 fieldset.CeonPanel { display: block; }
 </style>
 </noscript>
@@ -344,28 +343,28 @@ TABBED_PANELS_MENU_JS;
 	 * Outputs any panels that have content.
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _buildPanels()
+	protected function _buildPanels(): void
 	{
 		$this->_output .= '<div id="ceon-panels-wrapper">' . "\n";
-		
+
 		foreach ($this->_panels as $panel) {
 			if (!is_null($panel['content'])) {
 				$this->_output .= $panel['content'];
 			}
 		}
-		
+
 		$this->_output .= '</div>' . "\n";
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _buildConfigSettingDescRow()
-	
+
 	/**
-	 * Builds a HTML table row with a label and description.
+	 * Builds an HTML table row with a label and description.
 	 *
 	 * @access  protected
 	 * @param   string    $id            The ID of the form element (if any) the label is for.
@@ -373,7 +372,7 @@ TABBED_PANELS_MENU_JS;
 	 * @param   string    $description   The description.
 	 * @return  string    The HTML source for the row.
 	 */
-	protected function _buildConfigSettingDescRow($id, $label, $description)
+	protected function _buildConfigSettingDescRow(string $id, string $label, string $description): string
 	{
 		$table_row = '		<tr>
 			<td rowspan="2" class="CeonFormItemLabel"><label>' . $label . '</label></td>' . "\n";
@@ -394,16 +393,16 @@ TABBED_PANELS_MENU_JS;
 	// {{{ _buildConfigPanel()
 	
 	/**
-	 * Builds a HTML panel using a fieldset and an enclosed table or content.
+	 * Builds an HTML panel using a fieldset and an enclosed table or content.
 	 *
 	 * @access  protected
 	 * @param   string    $id           The ID for the panel.
 	 * @param   string    $title        The title for the panel.
 	 * @param   string    $table_rows   The content of the panel, as HTML rows.
-	 * @param   string    $content      The content of the panel, as HTML.
+	 * @param  string|null  $content      The content of the panel, as HTML.
 	 * @return  string    The HTML source for the panel.
 	 */
-	protected function _buildConfigPanel($id, $title, $table_rows, $content = null)
+	protected function _buildConfigPanel(string $id, string $title, string $table_rows, ?string $content = null): string
 	{
 		$panel = '<fieldset id="' . $id . '" class="CeonPanel">
 	<legend>';
@@ -414,7 +413,7 @@ TABBED_PANELS_MENU_JS;
 		
 		if (is_null($content)) {
 			// The panel's content is built using table rows
-			$panel .= '<table border="0" width="98%" cellpadding="0" cellspacing="0">' . "\n";
+			$panel .= '<table>' . "\n";
 			
 			$panel .= $table_rows;
 			
@@ -434,14 +433,14 @@ TABBED_PANELS_MENU_JS;
 	// {{{ _buildSubPanel()
 	
 	/**
-	 * Builds a HTML subpanel using a fieldset and HTML content.
+	 * Builds an HTML subpanel using a fieldset and HTML content.
 	 *
 	 * @access  protected
 	 * @param   string    $title     The title for the subpanel.
 	 * @param   string    $content   The content for the panel, as HTML.
 	 * @return  string    The HTML source for the subpanel.
 	 */
-	protected function _buildSubPanel($title, $content)
+	protected function _buildSubPanel(string $title, string $content): string
 	{
 		$panel = '				<fieldset>
 					<legend>';
@@ -466,54 +465,54 @@ TABBED_PANELS_MENU_JS;
 	 * Builds the HTML for the submit and cancel buttons. Adds it to the output content.
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _buildSubmitAndCancelButtons()
+	protected function _buildSubmitAndCancelButtons(): void
 	{
 		$buttons = '				<div class="SpacerSmall"></div>' . "\n";
-		
-		$buttons .= zen_image_submit('button_save.gif', IMAGE_SAVE, 'name="save" value="save" id="save"');
-		
+
+		$buttons .= zen_image_submit('button_save.gif', IMAGE_SAVE, 'name="save" id="save"');
+
 		$buttons .= '&nbsp;<a href="' . zen_href_link(FILENAME_CEON_URI_MAPPING_CONFIG, '', 'NONSSL') .'">' .
 			zen_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>' . "\n";
-		
+
 		$this->_output .= $buttons;
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _buildFooter()
-	
+
 	/**
 	 * Builds the HTML for the module copyright and version information. Adds it to the output content.
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _buildFooter()
+	protected function _buildFooter(): void
 	{
-		$footer = '				<div class="SpacerSmall"></div>' . "\n" . '<div id="footer">';
-		
-		$footer .= '<p><a href="http://ceon.net/software/business/zen-cart" target="_blank"><img src="';
-		
+		$footer = '				<div class="SpacerSmall"></div>' . "\n" . '<div id="footerCeon">';
+
+		$footer .= '<p><a href="https://ceon.net/software/business/zen-cart" target="_blank"><img alt="CEON logo" src="';
+
 		$footer .= DIR_WS_IMAGES;
-		
+
 		// Build the copyright year range
 		$copyright_year_range = $this->_copyright_start_year;
-		
+
 		$end_year = (date('Y') > 2012 ? date('Y') : 2012);
-		
+
 		$copyright_year_range .= '-' . $end_year;
-		
-		$footer .= 'ceon-button-logo.png" alt="Ceon" id="ceon-button-logo" /></a>' .
+
+		$footer .= 'ceon-button-logo.png" alt="Ceon" id="ceon-button-logo"></a>' .
 			'Module &copy; Copyright ' . $copyright_year_range .
-			' <a href="http://ceon.net/software/business/zen-cart" target="_blank">Ceon</a>' . "</p>\n";
-		
+			' <a href="https://ceon.net/software/business/zen-cart" target="_blank">Ceon</a>' . "</p>\n";
+
 		$footer .= '<p id="version-info">' . TEXT_FILES_VERSION . ': ' . $this->_version .
 			(!is_null($this->_edition_title) ? ' ' . $this->_edition_title : '') . "\n";
-		
-		$footer .= '<br />' . TEXT_INSTALLED_VERSION . ': ' .
+
+		$footer .= '<br>' . TEXT_INSTALLED_VERSION . ': ' .
 			(is_null($this->_installed_version) ? TEXT_NOT_INSTALLED : $this->_installed_version .
 			(!is_null($this->_edition_title) ? ' ' . $this->_edition_title : ''));
 		
@@ -541,7 +540,7 @@ TABBED_PANELS_MENU_JS;
 	 * @return  string    The information about the latest version, an error message, or a link to manually check
 	 *                    the version.
 	 */
-	protected function _getVersionCheckerOutput()
+	protected function _getVersionCheckerOutput(): string
 	{
 		$output = '';
 		
@@ -589,11 +588,11 @@ TABBED_PANELS_MENU_JS;
 				
 				$version_checker_response = curl_exec($ch);
 				
-				curl_close($ch);
+				
 			}
 			
 			// Parse information returned from version check and display appropriate output to user
-			if (strlen($version_checker_response) == 0) {
+			if ($version_checker_response === false || strlen($version_checker_response) == 0) {
 				$output .= '<p class="Error"><strong>' . TEXT_ERROR_VERSION_CHECK_NO_RESPONSE . '</strong></p>';
 				
 				$output_manual_link = true;
@@ -612,7 +611,7 @@ TABBED_PANELS_MENU_JS;
 				
 				$output .= '</p>';
 				
-			} else if (substr($version_checker_response, 0, 1) == '-') {
+			} elseif (str_starts_with($version_checker_response, '-')) {
 				// Error occurred looking up version number
 				$_SESSION[$this->_ceon_base_model_code . '_vc_response'] = $version_checker_response;
 				
@@ -623,30 +622,30 @@ TABBED_PANELS_MENU_JS;
 				$output_manual_link = true;
 				
 			} else if (preg_match('/^[0-9]+\.[0-9]+\.[0-9]+[^,]*,/', $version_checker_response)) {
-				// Version is out of date, display latest version info and download link
+				// Version is out of date, display the latest version info and download link
 				$_SESSION[$this->_ceon_base_model_code . '_vc_response'] = $version_checker_response;
-				
+
 				$latest_version_info = explode(',', $version_checker_response);
-				
+
 				$output .=
-					'<p class="Error">' . '<strong style="color: red">' . TEXT_OUT_OF_DATE . '</strong>' . '</p>';
-				
-				$output .= '<p style="margin-top: 0.4em">' . TEXT_LATEST_VERSION_IS . ' <strong>' .
+					'<p class="Error">' . '<strong style="color: red;">' . TEXT_OUT_OF_DATE . '</strong>' . '</p>';
+
+				$output .= '<p style="margin-top: 0.4em;">' . TEXT_LATEST_VERSION_IS . ' <strong>' .
 					$latest_version_info[0] .
 					(!is_null($this->_edition_title) ? ' ' . $this->_edition_title : '') . '</strong></p>';
-				
+
 				if (isset($latest_version_info[2])) {
 					// Display any additional message provided by the version checker server
 					$output .= '<p><strong>' . $latest_version_info[2] . '</strong></p>';
 				}
-				
+
 				$output .= '<p>' . '<a href="' . $latest_version_info[1] . '" target="_blank">' .
 					TEXT_CLICK_HERE_TO_DOWNLOAD_LATEST_VERSION . '</a></p>';
 			} else {
 				$output .= '<p class="Error"><strong>' . TEXT_ERROR_VERSION_CHECK_PROBLEM_PARSING .
 					'</strong></p>';
-				
-				// Output the response received as a HTML comment so that the error can be possibly be identified
+
+				// Output the response received as an HTML comment so that the error may be identified
 				$output .= "<!--\n" . $version_checker_response . "\n-->\n";
 				
 				$output_manual_link = true;

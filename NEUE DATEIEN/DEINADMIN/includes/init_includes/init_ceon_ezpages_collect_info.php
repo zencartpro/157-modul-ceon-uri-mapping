@@ -3,16 +3,16 @@
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @author      Ceon Support
- * @copyright   Copyright 2008-2019 Ceon
- * @copyright   Copyright 2003-2019 Zen Cart Development Team
+ * @copyright   Copyright 2008-2024 Ceon
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        https://ceon.net
- * $Id: init_ceon_ezpages_collect_info.php xxxx 2016-11-14 20:31:10Z Ceon Support $
+ * $Id: init_ceon_ezpages_collect_info.php 2026-04-05 14:31:10Z webchills $
  */
 
 
 if (defined('FILENAME_EZPAGES_ADMIN') && $_SERVER['SCRIPT_NAME'] == DIR_WS_ADMIN . (!strstr(FILENAME_EZPAGES_ADMIN, '.php') ? FILENAME_EZPAGES_ADMIN . '.php' : FILENAME_EZPAGES_ADMIN) && isset($_GET['action']) && $_GET['action'] == 'deleteconfirm') {
-			$pages_id = zen_db_prepare_input($_POST['ezID']);
+			$pages_id = (int)zen_db_prepare_input($_POST['ezID']);
 
 			// BEGIN CEON URI MAPPING 2 of 4
 			require_once(DIR_WS_CLASSES . 'class.CeonURIMappingAdminEZPagePages.php');
@@ -113,7 +113,7 @@ if (defined('FILENAME_EZPAGES_ADMIN') && $_SERVER['SCRIPT_NAME'] == DIR_WS_ADMIN
 				$page_error = true;
 			}
 
-			if ($page_error == false) {
+			if (!$page_error) {
 				// SET SESSION VARIABLE AWAITING REDIRECT. WHERE
 //        zen_redirect(zen_href_link(FILENAME_EZPAGES_ADMIN, (isset($_GET['page']) ? 'page=' . $_GET['page'] . '&' : '') . 'ezID=' . $pages_id));
 

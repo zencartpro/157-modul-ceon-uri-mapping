@@ -6,11 +6,11 @@
  * @package     ceon_uri_mapping
  * @author      Conor Kerr <zen-cart.uri-mapping@ceon.net>
  * @copyright   Copyright 2008-2024 Ceon
- * @copyright   Copyright 2003-2024 Zen Cart Development Team
+ * @copyright   Copyright 2003-2026 Zen Cart Development Team
  * @copyright   Portions Copyright 2003 osCommerce
  * @link        http://ceon.net/software/business/zen-cart/uri-mapping
  * @license     http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version     $Id: class.CeonURIMappingHandlerBase.php 2024-04-07 15:08:10Z webchills $
+ * @version     $Id: class.CeonURIMappingHandlerBase.php 2026-04-05 11:08:10Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -45,102 +45,101 @@ require_once(DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.CeonURIMappingDBLookup.php
  */
 class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 {
-	// {{{ properties
-	
-	/**
+    // {{{ properties
+    	/**
 	 * Flag maintains the status of the all-important request_uri environment variable.
 	 *
-	 * @var     boolean
+	 * @var     bool|null
 	 * @access  protected
 	 */
-	protected $_request_uri_value_identified = null;
-	
+	protected ?bool $_request_uri_value_identified = null;
+
 	/**
 	 * The URI being used to access the current page.
 	 *
-	 * @var     string
+	 * @var     null|string
 	 * @access  protected
 	 */
-	protected $_request_uri = null;
-	
+	protected ?string $_request_uri = null;
+
 	/**
 	 * The query parameters string for the current page.
 	 *
-	 * @var     string
+	 * @var     null|string
 	 * @access  protected
 	 */
-	protected $_query_string = null;
-	
+	protected ?string $_query_string = null;
+
 	/**
 	 * Flag to say whether the language is currently being changed by the user.
 	 *
-	 * @var     boolean
+	 * @var     bool
 	 * @access  protected
 	 */
-	protected $_language_changed = false;
-	
+	protected bool $_language_changed = false;
+
 	/**
 	 * The original language ID this page was run with.
 	 *
-	 * @var     integer
+	 * @var     int|null
 	 * @access  protected
 	 */
-	protected $_original_language_id = null;
-	
+	protected ?int $_original_language_id = null;
+
 	// }}}
-	
-	
+
+
 	// {{{ Class Constructor
-	
+
 	/**
 	 * Creates a new instance of the CeonURIMappingBase class. Not intended to be used directly as this is an
 	 * abstract class.
-	 * 
+	 *
 	 * @access  public
 	 */
 	public function __construct()
 	{
 		global $PHP_SELF, $messageStack;
-		
+
 		// The rewrite rule can sometimes interfere with the value of an important server variable.
 		// Fix any problems
 		if (!$this->_normaliseServerEnvironment()) {
 			// Couldn't establish a reasonable value for PHP_SELF
 		}
-		
+
 		if (!defined('CEON_URI_MAPPING_ENABLED') || CEON_URI_MAPPING_ENABLED == 0) {
 			// Module either isn't installed or isn't enabled
 			return;
 		}
-		
+
 		// Ceon URI Mapping should only run when Zen Cart itself is responsible for runtime execution. If this code
 		// is running because some other software has called the Zen Cart initsystem then don't attempt to map the
 		// URI
 		if ($PHP_SELF != (DIR_WS_CATALOG . 'index.php')) {
 			return;
 		}
-		
+
 		parent::__construct();
-		
+
 		// If the check to make sure that a value exists for the request URI variable has not yet been run, run it
 		// now
 		if (is_null($this->_request_uri_value_identified)) {
 			$this->_request_uri_value_identified = $this->_checkRequestURI();
 		}
-		
+
 		if (!$this->_request_uri_value_identified) {
 			// Essential information isn't available, can't proceed with attempt to map URIs, warn user!
 			$messageStack->add(
 				'Ceon URI Mapping cannot find a usable value for the REQUEST_URI server variable!', 'error');
-			
+
 			return;
 		}
-		
+
 		$this->_parseURI();
-		
+
 		// Run the language initsystem code here as, for some strange reason, it runs late in the initsystem
 		// process and the Ceon URI Mapping module must run before the sanitize initsystem script which normally
-		// preceeds the language initsystem code.
+		// precedes the language initsystem code.
 		$this->_initLanguageSystem();
 		
 		$current_uri_is_index_page = $this->_checkForAndHandleIndexPage();
@@ -159,9 +158,9 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * Makes sure that the PHP_SELF server environment variable has a reasonable value.
 	 *
 	 * @access  protected
-	 * @return  boolean   True if PHP_SELF environment variable has a reasonable value, false otherwise.
+	 * @return  bool   True if PHP_SELF environment variable has a reasonable value, false otherwise.
 	 */
-	protected function _normaliseServerEnvironment()
+	protected function _normaliseServerEnvironment(): bool
 	{
 		global $PHP_SELF;
 		
@@ -180,7 +179,7 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 			
 			$PHP_SELF = preg_replace('/(\?.*)?$/', '', $_SERVER['REQUEST_URI']);
 			
-		} else if (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($PHP_SELF, $_SERVER['DOCUMENT_ROOT']) !== false) {
+		} elseif (!empty($_SERVER['DOCUMENT_ROOT']) && str_contains($PHP_SELF, $_SERVER['DOCUMENT_ROOT'])) {
 			// Server has incorrectly built the full path to the file for the value of PHP_SELF, must correct it by
 			// removing the root path part
 			$PHP_SELF = str_replace($_SERVER['DOCUMENT_ROOT'], '', $PHP_SELF);
@@ -202,7 +201,7 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 					$PHP_SELF = $script_name;
 					
 					// Make sure starting directory slash wasn't removed
-					if (substr($PHP_SELF, 0, 1) != '/') {
+					if (!str_starts_with($PHP_SELF, '/')) {
 						$PHP_SELF = '/' . $PHP_SELF;
 					}
 				}
@@ -224,20 +223,20 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * necessary. Some code based on wordpress load script.
 	 *
 	 * @access  protected
-	 * @return  boolean   True if request URI environment variable is found/built, false otherwise.
+	 * @return  bool   True if request URI environment variable is found/built, false otherwise.
 	 */
-	protected function _checkRequestURI()
-	{
+	protected function _checkRequestURI(): bool
+    {
 		if (!isset($_SERVER['REQUEST_URI'])) {
 			$_SERVER['REQUEST_URI'] = '';
 		}
-		
+
 		if (!isset($_SERVER['SERVER_SOFTWARE'])) {
 			$_SERVER['SERVER_SOFTWARE'] = '';
 		}
-		
+
 		if (empty($_SERVER['REQUEST_URI']) || (@php_sapi_name() != 'cgi-fcgi' &&
-				strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false)) {
+                str_contains($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
 			// Necessary variable is missing or could possibly have an incorrect value
 			
 			if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
@@ -290,9 +289,9 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * found in the query string parameters, as it certainly won't be matched against in the database!
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _parseURI()
+	protected function _parseURI(): void
 	{
 		$this->_request_uri = $_SERVER['REQUEST_URI'];
 		
@@ -324,34 +323,33 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * load and the previous page load.
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _initLanguageSystem()
-	{
-		if (isset($_SESSION['languages_id'])) {
-			$this->_original_language_id = $_SESSION['languages_id'];
+	protected function _initLanguageSystem(): void
+    {
+        if (isset($_SESSION['languages_id'])) {
+			$this->_original_language_id = (int)$_SESSION['languages_id'];
 		}
-		
+
 		if (!isset($_SESSION['language']) || isset($_GET['language'])) {
-			
+
 			$lng = new language();
-			
+
 			if (isset($_GET['language']) && zen_not_null($_GET['language'])) {
 				// The user has selected a different language
 				$lng->set_language($_GET['language']);
-				
+
 				$this->_language_changed = true;
-				
+
 				unset($_GET['language']);
-				
-			} else if (LANGUAGE_DEFAULT_SELECTOR == 'Browser') {
+
+			} elseif (LANGUAGE_DEFAULT_SELECTOR === 'Browser') {
 				$lng->get_browser_language();
 			} else {
 				$lng->set_language(DEFAULT_LANGUAGE);
 			}
-			
-			$_SESSION['language'] =
-				(zen_not_null($lng->language['directory']) ? $lng->language['directory'] : 'english');
+
+			$_SESSION['language'] =	(zen_not_null($lng->language['directory']) ? $lng->language['directory'] : 'english');
 			
 			$_SESSION['languages_id'] = (zen_not_null($lng->language['id']) ? $lng->language['id'] : 1);
 			
@@ -364,7 +362,7 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 		}
 		
 		if (is_null($this->_original_language_id)) {
-			$this->_original_language_id = $_SESSION['languages_id'];
+			$this->_original_language_id = (int)$_SESSION['languages_id'];
 		}
 	}
 	
@@ -379,36 +377,36 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * the environment is configured appropriately.
 	 *
 	 * @access  protected
-	 * @return  boolean   Whether or not the current URI is the index page.
+	 * @return  bool   Whether the current URI is the index page.
 	 */
-	protected function _checkForAndHandleIndexPage()
-	{
+	protected function _checkForAndHandleIndexPage(): bool
+    {
 		$request_uri = strtolower($this->_request_uri);
-		
+
 		// Handle variations of the index page URI
 		if ((isset($_GET['main_page']) &&
-				(is_array($_GET['main_page']) || strlen($_GET['main_page']) == 0 || $_GET['main_page'] == FILENAME_DEFAULT) &&
+				(is_array($_GET['main_page']) || strlen($_GET['main_page']) === 0 || $_GET['main_page'] === FILENAME_DEFAULT) &&
 				!isset($_GET['cPath']) && !isset($_GET['manufacturers_id']) && !isset($_GET['typefilter'])) ||
 				(!isset($_GET['main_page']) && $request_uri == strtolower(DIR_WS_CATALOG) . 'index.php')) {
 			// URI is DIR_WS_CATALOG/index.php?main_page=index, DIR_WS_CATALOG/index.php or
 			// DIR_WS_CATALOG/index.php?main_page=
-			
+
 			// Redirect to DIR_WS_CATALOG
 			$redirection_uri = DIR_WS_CATALOG;
-			
+
 			if (isset($_GET['main_page'])) {
 				unset($_GET['main_page']);
 			}
-			
+
 			$redirection_uri .= $this->_buildQueryString();
-			
+
 			header("HTTP/1.1 301 Moved Permanently");
 			header("Location: " . $redirection_uri);
-			
+
 			zen_exit();
-			
-		} else if (!isset($_GET['main_page']) && $request_uri == strtolower(DIR_WS_CATALOG) ||
-				($request_uri . '/') == strtolower(DIR_WS_CATALOG)) {
+
+		} elseif (!isset($_GET['main_page']) && $request_uri === strtolower(DIR_WS_CATALOG) ||
+				($request_uri . '/') === strtolower(DIR_WS_CATALOG)) {
 			$_GET['main_page'] = FILENAME_DEFAULT;
 			
 			if (!isset($_GET['cPath']) && !isset($_GET['manufacturers_id']) && !isset($_GET['typefilter'])) {
@@ -418,14 +416,11 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 				$ceon_uri_mapping_canonical_uri = DIR_WS_CATALOG;
 				
 				// Remove any trailing slash(es) from the canonical URI, unless the URI is the root of the site
-				//steve added $this_is_home_page or it strips closing slash from index (which breaks facebook Open Graph Debugger for the homepage). $this_is_home_page sometimes not set.
 
-				while (!empty($this_is_home_page) && strlen($ceon_uri_mapping_canonical_uri) > 1 &&
-						 substr($ceon_uri_mapping_canonical_uri, -1) == '/') {
-					$ceon_uri_mapping_canonical_uri =
-						substr($ceon_uri_mapping_canonical_uri, 0, strlen($ceon_uri_mapping_canonical_uri) - 1);
+				while (!empty($this_is_home_page) && strlen($ceon_uri_mapping_canonical_uri) > 1 && str_ends_with($ceon_uri_mapping_canonical_uri, '/')) {
+					$ceon_uri_mapping_canonical_uri = substr($ceon_uri_mapping_canonical_uri, 0, strlen($ceon_uri_mapping_canonical_uri) - 1);
 				}
-				
+
 				$ceon_uri_mapping_canonical_uri = HTTP_SERVER . $ceon_uri_mapping_canonical_uri;
 				
 				// The index page is being used
@@ -446,19 +441,19 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * method.
 	 *
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _handleURI()
-	{
+	protected function _handleURI(): void
+    {
 		if (!isset($_GET['main_page'])) {
 			// Standard Zen Cart URI isn't being used, attempt to identify and map URI
-			$this->_handleStaticURI();
-			
-		} else if (isset($_GET['main_page']) && isset($_SESSION['ceon_uri_mapping_redirected'])) {
+            $this->_handleStaticURI();
+
+		} elseif (isset($_SESSION['ceon_uri_mapping_redirected'])) {
 			// Ceon URI Mapping redirected the customer here so there's no need for any further checks
 			unset($_SESSION['ceon_uri_mapping_redirected']);
-			
-		} else if (isset($_GET['main_page']) && !isset($_GET['action']) && count($_POST) == 0 &&
+
+		} elseif (!isset($_GET['action']) && count($_POST) == 0 &&
 				!($_GET['main_page'] == FILENAME_DEFAULT && !isset($_GET['cPath']) &&
 				!isset($_GET['manufacturers_id']) &&
 				(!isset($_GET['typefilter']) || $_GET['typefilter'] == '') &&
@@ -481,122 +476,122 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 *
 	 * @abstract
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
-	protected function _handleStaticURI() {}
-	
+	protected function _handleStaticURI(): void
+    {
+    }
+
 	// }}}
-	
-	
+
+
 	// {{{ _handleZCDynamicURI()
-	
+
 	/**
 	 * Attempts to find and redirect to a static URI for the current, dynamic URI. If none is found, Zen Cart can
 	 * proceed as normal.
 	 *
 	 * @abstract
 	 * @access  protected
-	 * @return  none
+	 * @return  void
 	 */
 	protected function _handleZCDynamicURI() {}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _handleHistoricalURIWithNoCurrentMapping()
-	
+
 	/**
 	 * Redirects to a standard Zen Cart dynamic URI, building the URI from the parameters passed.
 	 *
 	 * @abstract
 	 * @access  protected
-	 * @param   string    $main_page                 The name of the Zen Cart page for the URI.
-	 * @param   integer   $associated_db_id          The associated database ID for the URI.
-	 * @param   integer   $query_string_parameters   The query string parameters for the URI.
-	 * @return  none
+	 * @param  string  $main_page                 The name of the Zen Cart page for the URI.
+	 * @param  int  $associated_db_id          The associated database ID for the URI.
+	 * @param  string  $query_string_parameters   The query string parameters for the URI.
+	 * @return  void
 	 */
-	protected function _handleHistoricalURIWithNoCurrentMapping($main_page, $associated_db_id, $query_string_parameters) {}
-	
+	protected function _handleHistoricalURIWithNoCurrentMapping(string $main_page, int $associated_db_id, string $query_string_parameters) {}
+
 	// }}}
-	
-	
+
+
 	// {{{ _handleUnmappedURI()
-	
+
 	/**
 	 * Handles a Zen Cart dynamic URI which has no URI mapping.
 	 *
 	 * @abstract
 	 * @access  protected
-	 * @param   string    $main_page                 The name of the Zen Cart page for the URI.
-	 * @param   integer   $associated_db_id          The associated database ID for the URI.
-	 * @param   integer   $query_string_parameters   The query string parameters for the URI.
-	 * @return  none
+	 * @param  string  $main_page                 The name of the Zen Cart page for the URI.
+	 * @param  int  $associated_db_id          The associated database ID for the URI.
+	 * @param  string  $query_string_parameters   The query string parameters for the URI.
+	 * @return  void
 	 */
-	protected function _handleUnmappedURI($main_page, $associated_db_id, $query_string_parameters) {}
-	
+	protected function _handleUnmappedURI(string $main_page, int $associated_db_id, string $query_string_parameters) {}
+
 	// }}}
-	
-	
+
+
 	// {{{ _getCurrentURI()
-	
+
 	/**
 	 * Attempts to find the current URI for the specified language in the Ceon URI Mapping database.
 	 *
 	 * @access  protected
-	 * @param   string    $main_page                 The name of the Zen Cart page for the URI.
-	 * @param   integer   $associated_db_id          The associated database ID for the URI.
-	 * @param   integer   $query_string_parameters   The query string parameter string for the URI.
-	 * @param   integer   $language_id               The ID of the language.
+	 * @param  string  $main_page                 The name of the Zen Cart page for the URI.
+	 * @param  int|null  $associated_db_id          The associated database ID for the URI.
+	 * @param  null|string  $query_string_parameters   The query string parameter string for the URI.
+	 * @param  int  $language_id               The ID of the language.
 	 * @return  string|false   The current URI for the specified language.
 	 */
-	protected function _getCurrentURI($main_page, $associated_db_id, $query_string_parameters, $language_id)
-	{
-		global $db;
-		
-		$columns_to_retrieve = array(
+	protected function _getCurrentURI(string $main_page, ?int $associated_db_id, ?string $query_string_parameters, int $language_id): false|string
+    {
+		$columns_to_retrieve = [
 			'uri'
-			);
-		
+        ];
+
 		if (!is_null($associated_db_id)) {
-			$selections = array(
+			$selections = [
 				'main_page' => zen_db_prepare_input($main_page),
-				'associated_db_id' => (int) $associated_db_id,
-				'language_id' => (int) $language_id,
+				'associated_db_id' => $associated_db_id,
+				'language_id' => $language_id,
 				'current_uri' => 1
-				);
-				
-		} else if (!is_null($query_string_parameters)) {
-			$selections = array(
+            ];
+
+		} elseif (!is_null($query_string_parameters)) {
+			$selections = [
 				'main_page' => zen_db_prepare_input($main_page),
 				'query_string_parameters' => zen_db_prepare_input($query_string_parameters),
-				'language_id' => (int) $language_id,
+				'language_id' => $language_id,
 				'current_uri' => 1
-				);
-			
+            ];
+
 		} else {
-			$selections = array(
+			$selections = [
 				'main_page' => zen_db_prepare_input($main_page),
 				'associated_db_id' => 'null',
 				'query_string_parameters' => 'null',
-				'language_id' => (int) $language_id,
+				'language_id' => $language_id,
 				'current_uri' => 1
-				);
+            ];
 		}
-		
+
 		$current_uri_result = $this->getURIMappingsResultset($columns_to_retrieve, $selections, null, 1);
-		
+
 		if (!$current_uri_result->EOF) {
 			return $current_uri_result->fields['uri'];
 		}
-		
+
 		return false;
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ checkLanguageChangedCurrencyChangeRequired()
-	
+
 	/**
 	 * Checks if the currency needs to be changed as the language has just been changed and the store is set to use
 	 * a language's default currency. If so, attempts to switch to the language's default currency. This is a
@@ -604,82 +599,82 @@ class CeonURIMappingHandlerBase extends CeonURIMappingDBLookup
 	 * URI Mapping's handler runs.
 	 *
 	 * @access  public
-	 * @return  none
+	 * @return  void
 	 */
-	public function checkLanguageChangedCurrencyChangeRequired()
-	{
+	public function checkLanguageChangedCurrencyChangeRequired(): void
+    {
 		if (isset($_SESSION['ceon_uri_mapping_language_changed'])) {
 			$this->_language_changed = $_SESSION['ceon_uri_mapping_language_changed'];
-			
+
 			unset($_SESSION['ceon_uri_mapping_language_changed']);
 		}
-		
+
 		if ($this->_language_changed && USE_DEFAULT_LANGUAGE_CURRENCY == 'true' &&
 				LANGUAGE_CURRENCY != $_SESSION['currency']) {
 			$_SESSION['currency'] = zen_currency_exists(LANGUAGE_CURRENCY);
 		}
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _buildQueryString()
-	
+
 	/**
-	 * Builds the query string for the current query parameters. Can handle arrays and multi-dimensional arrays!
+	 * Builds the query string for the current query parameters. Can handle arrays and multidimensional arrays!
 	 *
 	 * @access  protected
 	 * @return  string    A URL encoded query parameters string.
 	 */
-	protected function _buildQueryString()
-	{
+	protected function _buildQueryString(): string
+    {
 		$query_string = '';
-		
+
 		foreach ($_GET as $key => $value) {
-			if (is_array($value)) {			
+			if (is_array($value)) {
 				$query_string .= $this->_buildArrayQueryParameter($key, $value);
 			} else {
-				$query_string .= '&' . urlencode($key) . '=' . urlencode($value);
+				$query_string .= '&' . urlencode($key) . '=' . urlencode((string)$value);
 			}
 		}
-		
+
 		if ($query_string != '') {
 			$query_string = '?' . substr($query_string, 1, strlen($query_string) - 1);
 		}
-		
+
 		return $query_string;
 	}
-	
+
 	// }}}
-	
-	
+
+
 	// {{{ _buildArrayQueryParameter()
-	
+
 	/**
 	 * Builds the URL encoded string for an array query parameter.
 	 *
 	 * @access  protected
-	 * @param   string    $key     The key for the query string parameter.
-	 * @param   array     $value   The value for the query string parameter.
+	 * @param  string  $key     The key for the query string parameter.
+	 * @param  array  $value   The value for the query string parameter.
 	 * @return  string    A URL encoded string representation of the query parameter.
 	 */
-	protected function _buildArrayQueryParameter($key, $value)
-	{
+	protected function _buildArrayQueryParameter(string $key, array $value): string
+    {
 		$parameter_string = '';
-		
+
 		$key .= '[]';
-		
+
 		foreach ($value as $subvalue) {
 			if (is_array($subvalue)) {
 				$parameter_string .= $this->_buildArrayQueryParameter($key, $subvalue);
 			} else {
-				$parameter_string .= '&' . urlencode($key) . '=' . urlencode($subvalue);
+				$parameter_string .= '&' . urlencode($key) . '=' . urlencode((string)$subvalue);
 			}
 		}
-		
+
 		return $parameter_string;
 	}
-	
+
 	// }}}
 }
 
